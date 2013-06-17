@@ -4,7 +4,6 @@
 \alias{NNshapeReg}
 \alias{checkLM}
 \alias{place.patch}
-\alias{pls2B}
 \alias{procAOV}
 \alias{r2morphoj}
 \alias{r2morphologika}
@@ -13,6 +12,8 @@
 \alias{warpRestrict}
 \alias{mcClosemat}
 \alias{get.obj.size}
+\alias{kendalldist}
+
 %dataset
 \alias{longnose.lm}
 \alias{shortnose.lm}

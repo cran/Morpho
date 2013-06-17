@@ -1,14 +1,10 @@
-regdist.raw<-function(dataarray,plot=TRUE,main="",rho="angle",dist.mat.out=FALSE)
-{     proc<-procSym(dataarray)
+regdist.raw<-function(dataarray,scale=TRUE, plot=TRUE,main="",rho="angle",dist.mat.out=FALSE)
+{     proc<-procSym(dataarray,scale=scale)
       x<-proc$rotated
       n<-dim(x)[3]
       m<-dim(x)[2]
       k<-dim(x)[1]
       y<-proc$orpdata
-
-
-
-
 
       qm<-dist(t(matrix(x,k*m,n)))  #calc  dist. between rotated config
       procdis<-sum(qm^2)/n
@@ -17,7 +13,7 @@ regdist.raw<-function(dataarray,plot=TRUE,main="",rho="angle",dist.mat.out=FALSE
         procdistmat<-matrix(NA,n,n) #calc rho from angle between rotated configs
           for (i in 1:n)
            {for (j in 1:n)
-           if (rho=="riemdist"){{procdistmat[i,j]<-riemdist(x[,,i],x[,,j])}}  # riemann dist.
+           if (rho=="riemdist"){{procdistmat[i,j] <- kendalldist(x[,,i],x[,,j])}}  # riemann dist.
            else if (rho=="angle"){{procdistmat[i,j]<-angle.calc(x[,,i],x[,,j])$rho}}
             }
 

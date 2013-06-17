@@ -7,7 +7,9 @@ scaleproc<-function (a3, proc.output = FALSE)
     zd <- a3
     s <- 0
     n <- dim(a3)[3]
-    aa <- apply(zd, c(3), norm)^2
+    #traceXtX <- function(x) x <- sqrt(sum(diag(crossprod(x))))
+    traceXtX <- function(x) x <- sum(x^2)
+    aa <- apply(zd, c(3), traceXtX)
     s <- sum(aa)
     omat <- vecx(zd)
     kk <- dim(omat)[2]
