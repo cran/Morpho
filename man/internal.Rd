@@ -2,6 +2,7 @@
 \alias{ang}
 \alias{angle.calc}
 \alias{barycenter}
+\alias{bindArr}
 \alias{calcGamma}
 \alias{calcTang_U_s}
 \alias{calcTang_U}
@@ -25,27 +26,12 @@
 \alias{cSize}
 \alias{closemat}
 \alias{fx}
-\alias{unbias}
 \alias{meshcube}
 \alias{rot.proc}
 \alias{projBack}
-\alias{setOMP}
 \alias{mcNNindex}
 \alias{write.obj}
 %to be moved to other packages
-
-%mesheR
-\alias{add.faces}
-\alias{del.faces}
-\alias{find.faces}
-\alias{minClost}
-
-%curvature
-\alias{mesh2ply2}
-\alias{plotCurves}
-\alias{readCurves}
-\alias{file2ply2}
-
 
 %copies from shapes package
 \alias{scaleproc}
