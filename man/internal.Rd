@@ -2,7 +2,6 @@
 \alias{ang}
 \alias{angle.calc}
 \alias{barycenter}
-\alias{bindArr}
 \alias{calcGamma}
 \alias{calcTang_U_s}
 \alias{calcTang_U}
@@ -31,9 +30,7 @@
 \alias{projBack}
 \alias{mcNNindex}
 \alias{write.obj}
-%to be moved to other packages
 
-%copies from shapes package
 \alias{scaleproc}
 \alias{gdif}
 \alias{addo}
