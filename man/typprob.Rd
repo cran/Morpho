@@ -17,7 +17,7 @@ sep = FALSE)
   \item{x}{vector or matrix of data the probability is to be calculated.
   }
   \item{data}{Reference data set.
-    %%     ~~Describe \code{data} here~~
+    
   }
   \item{groups}{vector containing grouping information.
   }
@@ -69,7 +69,7 @@ variates and generalized distances Human Evolution 7:49-69.
 Stefan Schlager}
 
 \examples{
-
+library(shapes)
 data <- procSym(gorf.dat)$PCscores[,1:3]
 probas <- typprob(data,data,small=TRUE)### get probability for each specimen
 
@@ -99,4 +99,4 @@ prop.table(ct1, 1)
 }
 
 \keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ ~kwd2 }
