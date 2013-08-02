@@ -1,12 +1,12 @@
 Package: Morpho
 Type: Package
-Title: Calculations and visualizations related to Geometric
+Title: Calculations and visualisations related to Geometric
         Morphometrics
-Version: 0.25
-Date: 2013-07-24
+Version: 0.25-1
+Date: 2013-08-02
 Author: Stefan Schlager
 Maintainer: Stefan Schlager <stefan.schlager@uniklinik-freiburg.de>
-Description: A toolset for Geometric Morphometrics and mesh processing.
+Description: A toolset for Geometric Morphometrics and mesh processing. This includes (among other stuff) mesh deformations based on reference points, permutation tests, detection of outliers, processing of sliding semi-landmarks.
 SystemRequirements: trimesh_project, rayproject, ply2ascii
         (http://sourceforge.net/projects/morpho-rpackage/files/Auxiliaries/)
 Suggests: car, lattice, ffmanova, pls, shapes
@@ -16,7 +16,7 @@ Copyright: see COPYRIGHT for details
 License: GPL-2
 LazyLoad: yes
 URL: http://sourceforge.net/projects/morpho-rpackage/
-Packaged: 2013-07-24 08:22:02 UTC; schlager
+Packaged: 2013-08-02 08:17:35 UTC; schlager
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2013-07-24 11:31:40
+Date/Publication: 2013-08-02 11:04:30
