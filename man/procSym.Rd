@@ -11,19 +11,19 @@
 \usage{
 procSym(dataarray, scale=TRUE, reflect=TRUE, CSinit=TRUE,  orp=TRUE, tol=1e-05,
         pairedLM=NULL, sizeshape=FALSE, use.lm=NULL, center.part=FALSE,
-        distfun=c("riemann", "angle"),SMvector=NULL, outlines=NULL,  deselect=FALSE,
+        distfun=c("angle", "riemann"),SMvector=NULL, outlines=NULL,  deselect=FALSE,
         recursive=TRUE,iterations=0, initproc=FALSE)
 }
 \arguments{
   \item{dataarray}{Input k x m x n real array, where k is the number of points, m is the number of dimensions, and n is the sample size.
   }
-  \item{scale}{Logical: indicating if scaling is requested
+  \item{scale}{logical: indicating if scaling is requested
   }
   \item{reflect}{logical: allow reflections.
   }
-  \item{CSinit}{Logical: if TRUE, all configurations are initially scaled to Unit Centroid Size.
+  \item{CSinit}{logical: if TRUE, all configurations are initially scaled to Unit Centroid Size.
   }
-  \item{orp}{Logical: if TRUE, an orthogonal projection at the meanshape into
+  \item{orp}{logical: if TRUE, an orthogonal projection at the meanshape into
     tangent space is performed.
   }
   \item{tol}{numeric: Threshold for convergence in the sliding process
@@ -69,15 +69,27 @@ procSym(dataarray, scale=TRUE, reflect=TRUE, CSinit=TRUE,  orp=TRUE, tol=1e-05,
   }
 
 }
+\details{This function performs Procrustes registration, allowing a
+  variety of options, including scaling, orthogonal projection into
+  tangentspace and relaxation of semi-landmarks on curves (without
+  reprojection onto the surface/actual outline). It also allows the
+  superimpositioning to be performed using only a subset of the
+  available landmark.
+  For taking into account object symmetry, \code{pairedLM} needs to be
+  set. This generates an object of class \code{"symproc"}. Otherwise an object
+  of class \code{"nosymproc"}. 
+  }
 
 \value{
   \item{size }{a vector containing the Centroid Size of the configurations}
   
   \item{rotated }{k x m x n array of the rotated configurations}
   
-  \item{Sym }{k x m x n array of the Symmetrical component - only available for the "Symmetry"-Option}
+  \item{Sym }{k x m x n array of the Symmetrical component - only
+  available for the "Symmetry"-Option (when pairedLM is defined)}
   
-  \item{Asym }{k x m x n array of the Asymmetrical component - only available for the "Symmetry"-Option}
+  \item{Asym }{k x m x n array of the Asymmetrical component - only
+  available for the "Symmetry"-Option (when pairedLM is defined)}
   \item{asymmean }{k x m matrix of mean asymmetric deviation from symmetric mean}
   \item{mshape }{sample meanshape}
   \item{symmean }{meanshape of symmetrized configurations}
@@ -122,15 +134,17 @@ procSym(dataarray, scale=TRUE, reflect=TRUE, CSinit=TRUE,  orp=TRUE, tol=1e-05,
   \code{\link{slider3d}} is recommended.
 }
 \examples{
-
+require(rgl)
 data(boneData)
 
 ### do an analysis of symmetric landmarks
 ## visualize landmarks on surface
+\dontrun{
  spheres3d(boneLM[,,1])
 wire3d(skull_0144_ch_fe.mesh,col=3)
 ## get landmark numbers
 text3d(boneLM[,,1],text=paste(1:10),adj = 1, cex=3)
+}
 ## determine paired Landmarks left side:
 left <- c(4,6,8)
 ## determine corresponding Landmarks on the right side:
@@ -142,13 +156,14 @@ symproc <- procSym(boneLM, pairedLM=pairedLM)
 pcaplot3d(symproc, sym=TRUE)
 ## visualize first 3 PCs of asymmetric shape
 pcaplot3d(symproc, sym=FALSE)
-
+\dontrun{
 ## visualze distribution of symmetric PCscores population
 pop <- name2factor(boneLM, which=3)
 require(car)
 spm(~symproc$PCscore_sym[,1:5], groups=pop)
 ## visualze distribution of asymmetric PCscores population
 spm(~symproc$PCscore_asym[,1:5], groups=pop)
+}
 
 }
 

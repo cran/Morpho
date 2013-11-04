@@ -10,7 +10,8 @@ sample mean)
 }
 \usage{
 relaxLM(lm, reference, SMvector, outlines = NULL, surp = NULL, sur.name
-= NULL, mesh=NULL, tol = 1e-05, deselect = FALSE, inc.check = TRUE, iterations = 0)
+        = NULL, mesh=NULL, tol = 1e-05, deselect = FALSE, inc.check = TRUE,
+        iterations = 0, fixRepro=TRUE)
 }
 \arguments{
   \item{lm}{k x 3 matrix containing landmark data to be slidden.
@@ -40,7 +41,10 @@ relaxLM(lm, reference, SMvector, outlines = NULL, surp = NULL, sur.name
   \item{iterations}{integer: maximum amounts the algorithm runs - even
     when 'tol' is not reached. When iterations=0, the algorithm runs
     until convergence.
-}
+  }
+  \item{fixRepro}{logical: if \code{TRUE}, fix landmarks will also be projected
+    onto the surface. If you have landmarks not on the surface, select \code{fixRepro=FALSE}
+  }
 }
 \details{needs trimesh_project to be installed (\url{http://sourceforge.net/projects/morpho-rpackage/files/Auxiliaries/})
 
@@ -54,6 +58,32 @@ relaxLM(lm, reference, SMvector, outlines = NULL, surp = NULL, sur.name
 
 
 \seealso{\code{\link{slider3d}}
+}
+\examples{
+require(rgl)
+data(nose)
+### relax shornose against longnose
+
+# define fix landmarks
+fix <- c(1:5,20:21)
+# define surface patch by specifying row indices of matrices
+# all except those defined as fix
+surp <- c(1:dim(shortnose.lm)[1])[-fix]
+## to reduce this example's computation time,
+# we only use the right hand semi-landmarks
+# (which keeps the left hand ones fix)
+surp <- surp[1:316]
+
+relax <- relaxLM(shortnose.lm[1:323, ],
+         longnose.lm[1:323, ], mesh=shortnose.mesh, iterations=1,
+         SMvector=fix, deselect=TRUE, surp=surp)
+
+\dontrun{
+# visualize differences red=before and green=after sliding
+deformGrid3d(shortnose.lm[1:323, ], relax, ngrid=0)
+# add surface
+wire3d(shortnose.mesh, col="white")
+}
 }
 
 \keyword{ ~kwd1 }

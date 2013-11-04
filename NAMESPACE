@@ -1,6 +1,172 @@
 useDynLib(Morpho)
-exportPattern("^[^\\.]")
-importFrom(MASS, ginv)
-importFrom(yaImpute, ann)
-importFrom(colorRamps, blue2green2red)
 import(doParallel)
+## selective imports
+importFrom(colorRamps, blue2green2red)
+importFrom(foreach, foreach, '%dopar%', '%do%')
+importFrom(MASS, ginv)
+importFrom(Matrix, sparseMatrix, diag, crossprod, solve)
+importFrom(parallel, mclapply, detectCores)
+importFrom(yaImpute, ann)
+importClassesFrom("Matrix"
+                  , dgCMatrix
+                  , dgeMatrix
+                  , dsCMatrix
+                  , dtCMatrix
+                  , sparseMatrix
+                  )
+importFrom(rgl
+           , lines3d
+           , open3d
+           , points3d
+           , rgl.bg
+	   , rgl.bringtotop
+           , rgl.clear
+           , rgl.close
+           , rgl.cur
+           , rgl.pop
+           , rgl.snapshot
+           , shade3d
+           , spheres3d
+           , text3d
+           , translate3d
+           , wire3d           
+           )
+##import(rgl)
+## export S3 methods
+S3method(meshDist, mesh3d)
+S3method(meshDist, matrix)
+S3method(export, meshDist)
+S3method(render, meshDist)
+S3method(render, matrixDist)
+S3method(pcaplot3d, symproc)
+S3method(pcaplot3d, nosymproc)
+S3method(exVar, mvr)
+S3method(exVar, lm)
+S3method(rotaxis3d, mesh3d)
+S3method(rotaxis3d, matrix)
+S3method(meshres, mesh3d)
+S3method(warpmovie3d, mesh3d)
+S3method(warpmovie3d, matrix)
+
+## export S3 generic functions
+export(meshDist)
+export(meshres)
+export(pcaplot3d)
+export(warpmovie3d)
+export(render)
+export(export)
+
+## export other functions
+export(adnormals)
+export(angle.calc)
+export(anonymize)
+export(barycenter)
+export(bindArr)
+export(bone1)
+export(bone2)
+export(bone3)
+export(cExtract)
+export(checkLM)
+export(closemeshKD)
+export(conv2backf)
+export(covDist)
+export(covPCA)
+export(covW)
+export(createAtlas)
+export(CreateL)
+export(crossp)
+export(cSize)
+export(CVA)
+export(deformGrid3d)
+export(exVar)
+export(exVar.lm)
+export(exVar.mvr)
+export(facenormals)
+export(file2mesh)
+export(find.outliers)
+export(fixLMtps)
+export(groupPCA)
+export(histGroup)
+export(kendalldist)
+export(lineplot)
+export(mcNNindex)
+export(mergeMeshes)
+export(mesh2grey)
+export(mesh2mesh)
+export(mesh2obj)
+export(mesh2ply)
+export(meshcube)
+export(name2factor)
+export(name2num)
+export(NNshapeReg)
+export(obj2mesh)
+export(PCdist)
+export(permudist)
+export(permuvec)
+export(placePatch)
+export(plotAtlas)
+export(plotNormals)
+export(pls2B)
+export(ply2mesh)
+export(predictShape.lm)
+export(procAOVsym)
+export(ProcGPA)
+export(procSym)
+export(proc.weight)
+export(projRead)
+export(qqmat)
+export(r2morphoj)
+export(r2morphologika)
+export(ray2mesh)
+export(readallTPS)
+export(read.csv.folder)
+export(readLandmarks.csv)
+export(read.lmdta)
+export(read.mpp)
+export(read.pts)
+export(regdist)
+export(relaxLM)
+export(relWarps)
+export(rmUnrefVertex)
+export(rmVertex)
+export(rotaxis3d)
+export(rotaxisMat)
+export(rotmesh.onto)
+export(rotonmat)
+export(rotonto)
+export(rotreverse)
+export(scalemesh)
+export(showPC)
+export(skin1)
+export(skin2)
+export(skin3)
+export(skin4)
+export(slider3d)
+export(tanplan)
+export(tps3d)
+export(typprob)
+export(typprobClass)
+export(unrefVertex)
+export(vecx)
+export(vert2points)
+export(warp.mesh)
+export(warpmovie2d)
+export(write.pts)
+
+## deprecated functions
+export(c.extract)
+export(c.size)
+export(deform.grid)
+export(mc.CVA)
+#export(mc.find.outliers) removed 7.10.2013
+#export(mc.permudist) removed 6.10.2013
+#export(mc.permuvec) removed 6.10.2013
+export(mc.procSym)
+export(mc.slider3d)
+export(regdist.raw)
+
+## private functions
+## addo ang calcGamma CreateL2D eigenPCA export.meshDist gdif meshDist.matrix meshDist.mesh3d meshres.mesh3d orp pcaplot3d.nosymproc pcaplot3d.symproc projBack read.obj render.matrixDist render.meshDist RGB2Grey rotaxis3d.matrix rotaxis3d.mesh3d rot.proc scaleproc Semislide warpmovie3d.matrix warpmovie3d.mesh3d write.obj place.patch
+
+## private functions in Morpho beginning with dot:
+## .bindArr2 .calcTang_U_s .calcTang_U .covPCApermut .CVAcrova .CVAdists .difplotLM2D .difplotLM .fx. groupPCAcrova 
