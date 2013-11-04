@@ -112,19 +112,17 @@ Stefan Schlager}
 \code{\link{render.meshDist}}, , \code{\link{export.meshDist}}, \code{\link{shade3d}}
 }
 \examples{
+require(rgl)
 data(nose)##load data
 ##warp a mesh onto another landmark configuration:
 warpnose.long <- warp.mesh(shortnose.mesh, shortnose.lm, longnose.lm)
-
-
 meshDist(warpnose.long, shortnose.mesh, method="m")
-
-
 
 #use signed distances and
 #color distances < 0.01 green:
+\dontrun{
 meshDist(warpnose.long, shortnose.mesh, sign=TRUE, tol=0.01, method="m")
-
+}
 }
 \keyword{ ~kwd1 }
 \keyword{ ~kwd2 }
