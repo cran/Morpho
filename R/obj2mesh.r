@@ -1,3 +1,5 @@
+#' @rdname ply2mesh
+#' @export
 obj2mesh <- function(filename,adnormals=TRUE)
 {	
     obj <- read.obj(filename)
@@ -23,7 +25,7 @@ obj2mesh <- function(filename,adnormals=TRUE)
     }
     
     if (adnormals && is.null(mesh$normals))
-        mesh <- adnormals(mesh)
+        mesh <- updateNormals(mesh)
     
     return(mesh)
 }
