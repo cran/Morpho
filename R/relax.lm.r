@@ -1,3 +1,71 @@
+#' relax one specific 3D landmark configuration against a reference
+#' 
+#' relax one specific 3D landmark configuration against a reference (e.g. a
+#' sample mean)
+#' 
+#' 
+#' @param lm k x 3 matrix containing landmark data to be slidden.
+#' @param reference k x 3 matrix containing landmark of the reference
+#' @param SMvector A vector containing the landmarks on the curve(s) that are
+#' allowed to slide
+#' @param outlines A vector (or if threre are several curves) a list of vectors
+#' (containing the rowindices) of the (Semi-)landmarks forming the curve(s) in
+#' the successive position on the curve - including the beginning and end
+#' points, that are not allowed to slide.
+#' @param surp A vector containing Semilandmarks positioned on surfaces.
+#' @param sur.name character: containing the filename of the corresponding
+#' surface.When specified, mesh has to be NULL.
+#' @param mesh triangular mesh of class "mesh3d" loaded into the R workspace,
+#' when specified, "sur.name" has to be NULL. The function
+#' \code{\link{closemeshKD}} will be used for reprojection onto the surface.
+#' @param tol numeric: Threshold for convergence in the sliding proces. Full
+#' Procrustes distance between actual result and previous iteration.
+#' @param deselect Logical: if TRUE, the SMvector is interpreted as those
+#' landmarks, that are not allowed to slide.
+#' @param inc.check Logical: if TRUE, the program stops when convergence
+#' criterion starts increasing and reports result from last iteration.
+#' @param iterations integer: maximum amounts the algorithm runs - even when
+#' 'tol' is not reached. When iterations=0, the algorithm runs until
+#' convergence.
+#' @param fixRepro logical: if \code{TRUE}, fix landmarks will also be
+#' projected onto the surface. If you have landmarks not on the surface, select
+#' \code{fixRepro=FALSE}
+#' @return returns kx3 matrix of slidden landmarks
+#' @author Stefan Schlager
+#' @seealso \code{\link{slider3d}}
+#' @references Gunz, P., P. Mitteroecker, and F. L. Bookstein. 2005.
+#' Semilandmarks in Three Dimensions, in Modern Morphometrics in Physical
+#' Anthropology. Edited by D. E. Slice, pp. 73-98. New York: Kluwer
+#' Academic/Plenum Publishers.
+#' @keywords ~kwd1 ~kwd2
+#' @examples
+#' 
+#' require(rgl)
+#' data(nose)
+#' ### relax shornose against longnose
+#' 
+#' # define fix landmarks
+#' fix <- c(1:5,20:21)
+#' # define surface patch by specifying row indices of matrices
+#' # all except those defined as fix
+#' surp <- c(1:dim(shortnose.lm)[1])[-fix]
+#' ## to reduce this example's computation time,
+#' # we only use the right hand semi-landmarks
+#' # (which keeps the left hand ones fix)
+#' surp <- surp[1:316]
+#' 
+#' relax <- relaxLM(shortnose.lm[1:323, ],
+#'          longnose.lm[1:323, ], mesh=shortnose.mesh, iterations=1,
+#'          SMvector=fix, deselect=TRUE, surp=surp)
+#' 
+#' \dontrun{
+#' # visualize differences red=before and green=after sliding
+#' deformGrid3d(shortnose.lm[1:323, ], relax, ngrid=0)
+#' # add surface
+#' wire3d(shortnose.mesh, col="white")
+#' }
+#' 
+#' @export
 relaxLM <- function(lm,reference,SMvector,outlines=NULL,surp=NULL,sur.name=NULL,mesh=NULL,tol=1e-05,deselect=FALSE,inc.check=TRUE,iterations=0, fixRepro=TRUE)
 {
     k <- dim(lm)[1]
@@ -17,11 +85,9 @@ relaxLM <- function(lm,reference,SMvector,outlines=NULL,surp=NULL,sur.name=NULL,
     
     cat(paste("Points will be initially projected onto surfaces","\n","-------------------------------------------","\n"))
     if (is.null(mesh)) {
-        projBack(lm,sur.name)
-        a <- read.table("out_cloud.ply",skip=14,sep=" ")
-        vs <- as.matrix(a[,1:3])
-        vn <- as.matrix(a[,4:6])
-        unlink("out_cloud.ply") #clean up
+        a <- projRead(lm, sur.name)
+        vs <- t(a$vb[1:3,])
+        vn <- t(a$normals[1:3,])
     } else {
         tmp <- closemeshKD(lm,mesh)
         vs <- vert2points(tmp)
@@ -36,11 +102,10 @@ relaxLM <- function(lm,reference,SMvector,outlines=NULL,surp=NULL,sur.name=NULL,
         U <- .calcTang_U_s(vs,vn,SMvector=SMvector,outlines=outlines,surface=surp,deselect=deselect)
         dataslido <- calcGamma(U$Gamma0,L$Lsubk3,U$U,dims=m)$Gamatrix
         if (is.null(mesh)) {
-            projBack(dataslido,sur.name)
-            a <- read.table("out_cloud.ply",skip=14,sep=" ")
-            vs <- as.matrix(a[,1:3])
-            vn <- as.matrix(a[,4:6])
-            unlink("out_cloud.ply") #clean up
+            a <- projRead(dataslido, sur.name)
+            vs <- t(a$vb[1:3,])
+            vn <- t(a$normals[1:3,])
+            
         } else {
             tmp <- closemeshKD(dataslido,mesh)
             vs <- vert2points(tmp)

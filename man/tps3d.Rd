@@ -1,44 +1,29 @@
 \name{tps3d}
-\Rdversion{1.1}
 \alias{tps3d}
-
-\title{
-thin plate spline mapping
-}
-\description{
-      maps a datamatrix via thin plate spline between calculated by a reference on a target configuration in 2D and 3D
-}
+\title{thin plate spline mapping}
 \usage{
 tps3d(M, refmat, tarmat, lambda = 0)
 }
-
 \arguments{
-  \item{M}{datamatrix - e.g. the matrix information of vertices of a given surface
+  \item{M}{datamatrix - e.g. the matrix information of
+  vertices of a given surface}
 
+  \item{refmat}{reference matrix - e.g. landmark
+  configuration on a surface}
+
+  \item{tarmat}{target matrix - e.g. landmark configuration
+  on a target surface}
+
+  \item{lambda}{integer: regularisation parameter of the
+  TPS.}
 }
-  \item{refmat}{reference matrix - e.g. landmark configuration on a surface
-
+\value{
+returns the warped datamatrix
 }
-  \item{tarmat}{target matrix - e.g. landmark configuration on a target surface
-
-  }
-   \item{lambda}{integer: regularisation parameter of the TPS.
-
+\description{
+maps a datamatrix via thin plate spline between calculated
+by a reference on a target configuration in 2D and 3D
 }
-}
-
-\value{returns the warped datamatrix
-  
-
-}
-\references{
-Bookstein FL. 1989. Principal Warps: Thin-plate splines and the decomposition of deformations. IEEE Transactions on pattern analysis and machine intelligence 11(6).
-}
-\author{
-Stefan Schlager
-}
-
-
 \examples{
 require(Morpho)
 data(nose)
@@ -52,14 +37,20 @@ tarlm[4,] <- longnose.lm[4,]
 ##  deform a set of semilandmarks by applying a TPS-deformation
 ##  based on 5 reference points
 deformed <- tps3d(shortnose.lm, reflm, tarlm)
+\dontrun{
 ##visualize results by applying a deformation grid
 deformGrid3d(shortnose.lm,deformed,ngrid = 5)
-
 }
-
+}
+\author{
+Stefan Schlager
+}
+\references{
+Bookstein FL. 1989. Principal Warps: Thin-plate splines and
+the decomposition of deformations. IEEE Transactions on
+pattern analysis and machine intelligence 11(6).
+}
 \seealso{
 \code{\link{warp.mesh}}
 }
-
-
 
