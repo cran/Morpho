@@ -1,12 +1,12 @@
-b50fff1a96d8e498efabc8b957fd9947 *DESCRIPTION
+a4ea64d9beb6be91b99c5108f4d02636 *DESCRIPTION
 e0b5c5d3f26735cee51ab51f1d44fbc9 *NAMESPACE
-f97ac06c780b58afbf4a8de961bdaa30 *R/Atlas.r
+ca02bfe45dea309d1ccf1011bae79e63 *R/Atlas.r
 8e6d4d246e213f113dd6cc33e59145d5 *R/CAC.r
 da25a9f14e048b731cbbaf0c9ba314bf *R/CVA.crova.r
 b82168247bf9ede7fe2c75d275e28b46 *R/CVA.r
 0a2217d448b21905cde51036bafda54d *R/CVAdists.r
 c9c46095926a78dcd9abd91ddabfa31d *R/CreateL.r
-86cb0a22f3a276d52e5f771e42cccca9 *R/Morpho-package.R
+a6115376e4c01a92f166772117d0d4fd *R/Morpho-package.R
 e584f9b82ec696dd99473f5ee3aab85c *R/NNshapeReg.r
 18b65c0ab48cfeb720d9c3b23c52ebc3 *R/PCdist.r
 0e58369d15874f240b1ae95a74cf5e3e *R/ProcGPA.r
@@ -62,7 +62,7 @@ ea83329869b5983e2ba9af0acb409e79 *R/name2.r
 ba90a2fd3443b7cfd0228a8725e364c2 *R/pcaplot3d.r
 d2737161f1580e1c0c0b16f7b69b0ddd *R/permudist.r
 0b5b077bee6cd9e26995514201a6851c *R/permuvec.r
-4c7af8114cddb4020850374769890454 *R/place.patch.r
+ecac94ffa48dd7bcee44174432ba67cc *R/place.patch.r
 b7d70d97e77a00288196bf9092e88da2 *R/plot.normals.r
 5c1a34b603440a9810431cfd466058e7 *R/pls2B.r
 1a218ab9c072e3f5ea403bbe77e2afe9 *R/ply2mesh.r
@@ -110,12 +110,12 @@ e2907811fa573ebcb1d00f042adcc2cb *README.md
 7271b1651f1d04e9275b081d94abe383 *data/datalist
 f1679a97424796e7cc5bfb4710dbadba *data/nose.rda
 972d4f50c92cacbe61f7611a33ae4faa *inst/COPYRIGHTS
-9755723da77c347bae0cc5d5e5aa9d0b *inst/NEWS.Rd
+28418de448469bf4227e3a37e0ba3916 *inst/NEWS.Rd
 588294b59b44997e2e674fde15923410 *man/CAC.Rd
 3fc5e6501b11c69080ac1111de6bdd25 *man/CVA.Rd
 5c3918d8ce45db096c6c23c4b2a8b9ea *man/CreateL.Rd
 f3c521ded8ca9a19bf4057b8d057f131 *man/Morpho-deprecated.Rd
-e09745c824c0ad94b2e827d3bc38abf3 *man/Morpho-package.Rd
+fa362bdc5517332be63710d17f56fa6b *man/Morpho-package.Rd
 5034d47c766a8e544a4f4e65b823dc3d *man/NNshapeReg.Rd
 879f7b7d148804e19ab217721a07d913 *man/PCdist.Rd
 86d934ea16a77c5645340af6f03602d8 *man/ProcGPA.Rd
@@ -134,7 +134,7 @@ cc8817a9b8218ba984989f54e040d556 *man/cExtract.Rd
 f2188dee2a1aab3ee2b20ea35bde5421 *man/conv2backf.Rd
 1b3784eed61679ae3f1311d347ad2f6e *man/covDist.Rd
 4fe79e4ee16f86cc3d986ee6e37f1094 *man/covW.Rd
-bb38ae023dcb5c297d195ccd2d5982ca *man/createAtlas.Rd
+924ba9cc1f040a993795a0b02fe0f21f *man/createAtlas.Rd
 8d9d3b870e562ed8c60c55c6ae5acf7d *man/deformGrid3d.Rd
 79deb06dc93c11b5e04e4668eea16380 *man/exVar.Rd
 db885099fe7c472c59fa93cc78da1677 *man/find.outliers.Rd
@@ -156,7 +156,7 @@ cdde03f9e575bf1b2aa7f52faef468a6 *man/name2factor.Rd
 e4c9b7a5f8a439df90b17370487e730b *man/pcaplot3d.Rd
 ee39a10e034b87a5060d0f7a7b51187d *man/permudist.Rd
 82cbbfcf935646fa007b025ee25afe90 *man/permuvec.Rd
-7a420fadff97790446d2dedb809e7eec *man/placePatch.Rd
+ce2250502990f1aa7c3defd5941d7b79 *man/placePatch.Rd
 2f7eb99cd134b7e9e80d5b2bf92aa748 *man/plotAtlas.Rd
 7b6cddef408d3f31f894dcfba2eb3e67 *man/plotNormals.Rd
 11f0d210d16c2849dee9e60c6ad7c8b5 *man/pls2B.Rd

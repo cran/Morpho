@@ -8,6 +8,7 @@
 #' defined on an atlas onto all surface of a given sample by Thin-Plate Spline
 #' deformation and additional mechanisms to avoid distortions. The algorithm
 #' can be outlined as followed.  \enumerate{
+#' \item relax curves (if specified) against atlas.
 #' \item deform atlas onto targets by TPS based on predefined landmarks (and curves).
 #' \item project coordinates on deformed atlas onto target mesh
 #' \item 'inflate' or 'deflate' configuration along their normals to make sure
@@ -16,6 +17,7 @@
 #' \item Check if normals are roughly pointing into the same direction as those
 #' on the (deformed) atlas.
 #' \item Relax all points against atlas.
+#' \item the predefined coordinates will note change afterwards!
 #' 
 #' }
 #' 
@@ -42,7 +44,9 @@
 #' toward the atlas.
 #' @param keep.fix integer: rowindices of those landmarks that are not allowed
 #' to be relaxed in case \code{relax.patch=TRUE}. If not specified, all
-#' landmarks will be kept fix.
+#' landmarks will be kept fix. This is preferably set during atlas creation with \code{createAtlas}:
+#' In case you specified corrCurves on the atlas, you should define explicitly which landmarks
+#' (also on the curves) are supposed to fix to prevent them from sliding.
 #' @param rhotol numeric: maximum amount of deviation a hit point's normal is
 #' allowed to deviate from the normal defined on the atlas. If
 #' \code{relax.patch=TRUE}, those points exceeding this value will be relaxed
@@ -103,8 +107,13 @@ placePatch <- function(atlas, dat.array, path, prefix=NULL, fileext=".ply", ray=
     {
         if (!inherits(atlas, "atlas"))
             stop("please provide object of class atlas")
-        if (is.null(keep.fix))
-            keep.fix <- 1:dim(atlas$landmarks)[1]
+        
+        if (is.null(keep.fix)) {
+            if (is.null(atlas$keep.fix))
+                keep.fix <- 1:dim(atlas$landmarks)[1]
+            else
+                keep.fix <- atlas$keep.fix
+        }
         if (is.null(tol) && !is.null(inflate))
             tol <- inflate
         if (mc.cores > 1)
@@ -141,22 +150,32 @@ place.patch <- function(dat.array,path,atlas.mesh,atlas.lm,patch,curves=NULL,pre
             name <- NULL
         }
         
+
         L <- CreateL(atlas.lm)
         L1 <- CreateL(rbind(atlas.lm,patch))
         meshpath <- paste(path,"/",prefix,name,fileext,sep="")
         i <- 0
         parfun <- function(i){
+           
             tmp.name <- meshpath[i]
             tmp.mesh <- vcgImport(tmp.name)
             if (!usematrix)
                 tmp.data <- projRead(dat.array[,,i],tmp.mesh,readnormals=TRUE)
             else
                 tmp.data <- projRead(dat.array,tmp.mesh,readnormals=TRUE)
-            
 ### relax existing curves against atlas ###
             if (!is.null(outlines)) {
                 sm <- SMvector
-                U <- .calcTang_U_s(t(tmp.data$vb[1:3,]),t(tmp.data$normals[1:3,]),SMvector=SMvector,outlines=outlines,surface=NULL,deselect=deselect)
+                deselcurve <- TRUE
+                if (prod(length(unique(SMvector)) == k)) {
+                    message("There are corresponding curves but no fix landmarks specified")
+                    SMvector <- c(1:k)[which(! (1:k %in% unlist(outlines)))]
+                    if (!length(SMvector)) {
+                        SMvector <- 1:k
+                        deselcurve <- FALSE
+                    }
+                }
+                U <- .calcTang_U_s(t(tmp.data$vb[1:3,]),t(tmp.data$normals[1:3,]),SMvector=SMvector,outlines=outlines,surface=NULL,deselect=deselcurve)
                 slide <- calcGamma(U$Gamma0,L$Lsubk3,U$U,dims=3)$Gamatrix
                 tmp.data <- projRead(slide,tmp.mesh,readnormals=TRUE)
                 tps.lm <- tps3d(patch,atlas.lm,slide)
@@ -167,7 +186,7 @@ place.patch <- function(dat.array,path,atlas.mesh,atlas.lm,patch,curves=NULL,pre
                 sm <- 1:k
                 tps.lm <- tps3d(patch,atlas.lm,t(tmp.data$vb[1:3,]))
             }
-
+            
             slide <- t(tmp.data$vb[1:3,])
             slidenormals <- t(tmp.data$normals[1:3,])
             if (!usematrix)   #replace projected points with original for fix landmarks
@@ -190,6 +209,11 @@ place.patch <- function(dat.array,path,atlas.mesh,atlas.lm,patch,curves=NULL,pre
             relax <- rbind(slide,t(tps.lm$vb[1:3,]))
             normals <- rbind(slidenormals,t(tps.lm$normals[1:3,]))
             surface <- c((k+1):(patch.dim+k))  ## define surface as appended to preset landmarks
+            if (!is.null(curves)) {
+                if (!is.list(curves))
+                    curves <- list(curves)
+                curves <- lapply(curves,function(x) x+k)
+            }
             free <- NULL
 ### compare normals of projection and original points
             if (!is.null(rhotol)) {
@@ -214,12 +238,14 @@ place.patch <- function(dat.array,path,atlas.mesh,atlas.lm,patch,curves=NULL,pre
             
 ### relax patch against reference ###
             if (relax.patch){ ### relax against reference
+                if (!is.list(outlines) && !is.null(outlines))
+                    outlines <- list(outlines)
                 outltmp <- append(outlines,curves) ## add curves from patch to predefined curves
-                remout <- which(surface %in% curves)
-                
-                if (length(remout) > 0)
+                remout <- which(surface %in% unlist(curves))
+               
+                if (length(remout))
                     surface <- surface[-remout] ### remove patch curves from surface 
-                if (length(surface)==0)
+                if (!length(surface))
                     surface <- NULL
                 
                 U1 <- .calcTang_U_s(relax, normals,SMvector=sm,outlines=outltmp,surface=surface,free=free,deselect=deselect)
