@@ -2,7 +2,7 @@
 \alias{mcNNindex}
 \title{find nearest neighbours for point clouds}
 \usage{
-mcNNindex(target, query, cores = detectCores(), k = k, ...)
+mcNNindex(target, query, cores = parallel::detectCores(), k = k, ...)
 }
 \arguments{
   \item{target}{\code{k x m} matrix containing data which
@@ -46,6 +46,4 @@ wire3d(shortnose.mesh)
 \seealso{
 \code{\link{closemeshKD}}
 }
-\keyword{~kwd1}
-\keyword{~kwd2}
 

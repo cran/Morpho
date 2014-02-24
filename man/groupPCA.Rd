@@ -3,7 +3,7 @@
 \title{Perform PCA based of the group means' covariance matrix}
 \usage{
 groupPCA(dataarray, groups, rounds = 10000, tol = 1e-10, cv = TRUE,
-  mc.cores = detectCores(), weighting = TRUE)
+  mc.cores = parallel::detectCores(), weighting = TRUE)
 }
 \arguments{
   \item{dataarray}{Either a k x m x n real array, where k
@@ -101,6 +101,4 @@ International Journal of Pure and Applied Mathematics 19,
 \seealso{
 \code{\link{CVA}}
 }
-\keyword{~kwd1}
-\keyword{~kwd2}
 

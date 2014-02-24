@@ -30,7 +30,7 @@
 #' \item{p.dist }{p-value of length difference between residual vectors}
 #' \item{subdist }{length of residual vectors connecting the subgroups}
 #' means.
-#' @keywords ~kwd1 ~kwd2
+#' 
 #' @examples
 #' 
 #' data(boneData)
@@ -64,7 +64,7 @@
 #' ## also non-significant
 #' 
 #' @export
-permuvec <- function(data,groups,subgroups=NULL,rounds=10000,scale=TRUE,tol=1e-10,mc.cores=detectCores())
+permuvec <- function(data,groups,subgroups=NULL,rounds=10000,scale=TRUE,tol=1e-10,mc.cores=parallel::detectCores())
 {
   win <- FALSE
   if(.Platform$OS.type == "windows")

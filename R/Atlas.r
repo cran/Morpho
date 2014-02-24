@@ -8,7 +8,7 @@
 #' as on each specimen in the corresponding sample.
 #' @param patch matrix containing semi-landmarks to be projected onto each
 #' specimen in the corresponding sample.
-#' @param corrCuves a vector or a list containing vectors specifiyng the rowindices of
+#' @param corrCurves a vector or a list containing vectors specifiyng the rowindices of
 #' \code{landmarks} to be curves that are defined on the atlas AND each specimen.
 #' e.g. if landmarks 2:4 and 5:10 are two distinct curves, one would specifiy \code{corrCurves = list(c(2:4), c(5:10))}.
 #' @param patchCurves a vector or a list containing vectors specifiyng the
@@ -20,7 +20,7 @@
 #' argument names.
 #' @note This is a helper function of \code{\link{placePatch}}.
 #' @seealso \code{\link{placePatch}, \link{plotAtlas}}
-#' @keywords ~kwd1 ~kwd2
+#' 
 #' @examples
 #' 
 #' data(nose)
@@ -28,14 +28,14 @@
 #'             shortnose.lm[c(1:5,20:21),], patch=shortnose.lm[-c(1:5,20:21),])
 #' 
 #' @export
-createAtlas <- function(mesh, landmarks, patch, corrCuves=NULL, patchCurves=NULL,keep.fix=NULL)
+createAtlas <- function(mesh, landmarks, patch, corrCurves=NULL, patchCurves=NULL,keep.fix=NULL)
     {
         atlas <- list()
         class(atlas) <- "atlas"
         atlas$mesh <- mesh
         atlas$landmarks <- landmarks
         atlas$patch <- patch
-        atlas$corrCurves <- corrCuves
+        atlas$corrCurves <- corrCurves
         atlas$patchCurves<- patchCurves
         atlas$keep.fix <- keep.fix
         return(atlas)
@@ -65,7 +65,7 @@ createAtlas <- function(mesh, landmarks, patch, corrCuves=NULL, patchCurves=NULL
 #' @return returns invisible vector containing \code{rgl.id} of rendered
 #' objects.
 #' @seealso \code{\link{placePatch}, \link{createAtlas}}
-#' @keywords ~kwd1 ~kwd2
+#' 
 #' @examples
 #' 
 #' data(nose)

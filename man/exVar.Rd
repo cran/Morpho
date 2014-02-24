@@ -26,10 +26,6 @@ exVar(model, ...)
 returns the quotient.
 }
 \description{
-calculate variance of a distribution stemming from
-prediction models
-}
-\details{
 calculates a quotient of the overall varriance within a
 predicted distribution to that from the original one. This
 function calculates a naive extension of the univariate
@@ -58,6 +54,4 @@ Langsrud O, Juergensen K, Ofstad R, Naes T. 2007. Analyzing
 Designed Experiments with Multiple Responses Journal of
 Applied Statistics 34:1275-1296.
 }
-\keyword{~kwd1}
-\keyword{~kwd2}
 

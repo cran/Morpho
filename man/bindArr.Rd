@@ -17,6 +17,10 @@ returns array of combined matrices/arrays
 concatenate multiple 3-dimensional arrays and/or
 2-dimensional matrices to one big array
 }
+\details{
+dimnames, if present and if differing between entries, will
+be concatenated, separated by a "_".
+}
 \examples{
 A <- matrix(rnorm(18),6,3)
 B <- matrix(rnorm(18),6,3)
@@ -31,6 +35,4 @@ newArr2 <- bindArr(newArr,newArr,along=1)
 \code{\link{cbind}}, \code{\link{rbind}},
 \code{\link{array}}
 }
-\keyword{~kwd1}
-\keyword{~kwd2}
 

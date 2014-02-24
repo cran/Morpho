@@ -2,7 +2,7 @@
 \alias{createAtlas}
 \title{Create an atlas needed in placePatch}
 \usage{
-createAtlas(mesh, landmarks, patch, corrCuves = NULL, patchCurves = NULL,
+createAtlas(mesh, landmarks, patch, corrCurves = NULL, patchCurves = NULL,
   keep.fix = NULL)
 }
 \arguments{
@@ -17,7 +17,7 @@ createAtlas(mesh, landmarks, patch, corrCuves = NULL, patchCurves = NULL,
   projected onto each specimen in the corresponding
   sample.}
 
-  \item{corrCuves}{a vector or a list containing vectors
+  \item{corrCurves}{a vector or a list containing vectors
   specifiyng the rowindices of \code{landmarks} to be
   curves that are defined on the atlas AND each specimen.
   e.g. if landmarks 2:4 and 5:10 are two distinct curves,
@@ -53,6 +53,4 @@ atlas <- createAtlas(shortnose.mesh, landmarks =
 \seealso{
 \code{\link{placePatch}, \link{plotAtlas}}
 }
-\keyword{~kwd1}
-\keyword{~kwd2}
 
