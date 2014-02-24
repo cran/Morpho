@@ -16,7 +16,7 @@
 #' 
 #' @return \code{l x k } matrix containing indices of closest points.
 #' @seealso \code{\link{closemeshKD}}
-#' @keywords ~kwd1 ~kwd2
+#' 
 #' @examples
 #' 
 #' require(rgl)
@@ -31,7 +31,7 @@
 #' }
 #' 
 #' @export
-mcNNindex <- function(target,query,cores=detectCores(),k=k,...)
+mcNNindex <- function(target,query,cores=parallel::detectCores(),k=k,...)
     {
         if(.Platform$OS.type == "windows")
             cores <- 1

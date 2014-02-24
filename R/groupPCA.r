@@ -43,7 +43,7 @@
 #' 
 #' Boulesteix, A. L. 2005: A note on between-group PCA, International Journal
 #' of Pure and Applied Mathematics 19, 359-366.
-#' @keywords ~kwd1 ~kwd2
+#' 
 #' @examples
 #' 
 #' require(car)
@@ -81,7 +81,7 @@
 #' 
 #' 
 #' @export
-groupPCA <- function(dataarray, groups, rounds = 10000,tol=1e-10,cv=TRUE,mc.cores=detectCores(), weighting=TRUE)
+groupPCA <- function(dataarray, groups, rounds = 10000,tol=1e-10,cv=TRUE,mc.cores=parallel::detectCores(), weighting=TRUE)
 {
     pmatrix.proc <- NULL
     proc.distout <- NULL

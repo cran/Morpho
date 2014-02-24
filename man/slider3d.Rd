@@ -8,7 +8,7 @@ slider3d(dat.array, SMvector, outlines = NULL, surp = NULL,
   sur.path = "sur", sur.name = NULL, meshlist = NULL, ignore = NULL,
   sur.type = "ply", tol = 1e-05, deselect = FALSE, inc.check = TRUE,
   recursive = TRUE, iterations = 0, initproc = TRUE, speed = TRUE,
-  pairedLM = 0, weights = NULL, mc.cores = detectCores(),
+  pairedLM = 0, weights = NULL, mc.cores = parallel::detectCores(),
   fixRepro = TRUE)
 }
 \arguments{
@@ -146,7 +146,7 @@ fix <- c(1:5,20:21)
 surp <- c(1:nrow(shortnose.lm))[-fix]
 
 slide <- slider3d(data, SMvector=fix, deselect=TRUE, surp=surp,
-                  sur.path=".",iterations=1)
+                  sur.path=".",iterations=1,mc.cores=1)
                   # sur.path="." is the current working directory
 
 # now one example with meshes in workspace

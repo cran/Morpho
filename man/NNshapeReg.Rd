@@ -3,7 +3,7 @@
 \title{Estimate the shape by averaging the shape of the nearest neighbours.}
 \usage{
 NNshapeReg(x, y = NULL, n = 3, mahalanobis = FALSE,
-  mc.cores = detectCores())
+  mc.cores = parallel::detectCores())
 }
 \arguments{
   \item{x}{an array or matrix (one row per specim) with
@@ -41,7 +41,7 @@ library(shapes)
 proc <- procSym(gorf.dat)
 #use the closest 3 specimen based on the first 4 landmarks
 #to estimate the shape
-estim <- NNshapeReg(proc$rotated[1:4,,],proc$rotated,n=3)
+estim <- NNshapeReg(proc$rotated[1:4,,],proc$rotated,n=3,mc.cores=1)
 #compare estimation and true config
 plot(proc$rotated[,,1],asp=1)
 points(estim[,,1],col=2)
@@ -49,6 +49,4 @@ points(estim[,,1],col=2)
 \seealso{
 \code{\link{proc.weight}}, \code{\link{fixLMtps}}
 }
-\keyword{~kwd1}
-\keyword{~kwd2}
 

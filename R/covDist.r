@@ -1,13 +1,13 @@
-#' calculate distances and PC-coordinates of covariance matrices
+#' calculates distances and PC-coordinates of covariance matrices
 #' 
-#' calculate PC-coordinates of covariance matrices by using the Riemannian
+#' calculates PC-coordinates of covariance matrices by using the Riemannian
 #' metric in their respective space.
 #' 
-#' @title calculate distances and PC-coordinates of covariance matrices
+#' @details
 #' \code{covDist} calculates the Distance between covariance matrices while \code{covPCA} uses a MDS (multidimensional scaling) approach to obtain PC-coordinates
 #' from a  distance matrix derived from multiple groups. P-values for pairwise
 #' distances can be computed by permuting group membership and comparing actual
-#' distances to those obtained from random resampling.
+#' distances to those obtained from random resampling. To calculate confidence intervals for PC-scores, within-group bootstrapping can be performed.
 #' 
 #' @param s1 m x m covariance matrix 
 #' @param s2 m x m covariance matrix 
@@ -20,7 +20,7 @@
 #'
 #' Hastie T, Tibshirani R, Friedman JJH.  2013. The elements of statistical
 #' learning. Springer New York.
-#' @keywords ~kwd1 ~kwd2
+#' 
 #'
 #' @examples
 #' 
@@ -61,7 +61,7 @@ covDist <- function(s1,s2)
     return(cdist)
 }
 
-#'@param data matrix containing data with one row per observation
+#' @param data matrix containing data with one row per observation
 #' @param groups factor: group assignment for each specimen
 #' @param rounds integer: rounds to run permutation of distances by randomly assigning group membership
 #' @param bootrounds integer: perform bootstrapping to generate confidence intervals  (lower boundary, median and upper boundary) for PC-scores.
@@ -110,6 +110,8 @@ covPCA <- function(data,groups,rounds=1000,bootrounds=0,lower.bound=0.05, upper.
         data[groups==lev[i],] <- sweep(data[groups==lev[i],],2, apply(data[groups==lev[i],],2,mean))
     data <- as.matrix(data)
     groups <- as.integer(groups)
+    rounds <- as.integer(rounds)[1]
+    bootrounds <- as.integer(bootrounds)[1]
     result <- .Call("covPCAwrap", data, groups,bootrounds,rounds)
     
     dist <- result$dist

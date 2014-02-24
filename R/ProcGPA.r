@@ -27,7 +27,7 @@
 #' 
 #' Dryden IL, Mardia KV.  1998. Statistical shape analysis. John Wiley and
 #' sons, Chichester.
-#' @keywords ~kwd1 ~kwd2
+#' 
 #' @examples
 #' 
 #' data(boneData)
@@ -134,7 +134,7 @@ ProcGPA <- function(dat.array,tol=1e-5,scale=TRUE,CSinit=FALSE,silent=FALSE,weig
             x1 <- x2
         }
     }
-    mshape <- apply(x,c(1,2),mean)
+    mshape <- arrMean3(x)
     if (CSinit) {
         msize <- cSize(mshape)
         mshape <- mshape/msize

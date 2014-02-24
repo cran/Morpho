@@ -110,7 +110,7 @@
 #' surp <- c(1:nrow(shortnose.lm))[-fix]
 #' 
 #' slide <- slider3d(data, SMvector=fix, deselect=TRUE, surp=surp,
-#'                   sur.path=".",iterations=1)
+#'                   sur.path=".",iterations=1,mc.cores=1)
 #'                   # sur.path="." is the current working directory
 #' 
 #' # now one example with meshes in workspace
@@ -130,7 +130,7 @@
 #' }
 #' 
 #' @export
-slider3d <- function(dat.array,SMvector,outlines=NULL,surp=NULL,sur.path="sur",sur.name=NULL, meshlist=NULL, ignore=NULL,sur.type="ply",tol=1e-05,deselect=FALSE,inc.check=TRUE,recursive=TRUE,iterations=0,initproc=TRUE,speed=TRUE,pairedLM=0,weights=NULL,mc.cores = detectCores(), fixRepro=TRUE)
+slider3d <- function(dat.array,SMvector,outlines=NULL,surp=NULL,sur.path="sur",sur.name=NULL, meshlist=NULL, ignore=NULL,sur.type="ply",tol=1e-05,deselect=FALSE,inc.check=TRUE,recursive=TRUE,iterations=0,initproc=TRUE,speed=TRUE,pairedLM=0,weights=NULL,mc.cores = parallel::detectCores(), fixRepro=TRUE)
 {
     if(.Platform$OS.type == "windows")
         mc.cores <- 1
@@ -224,27 +224,30 @@ slider3d <- function(dat.array,SMvector,outlines=NULL,surp=NULL,sur.path="sur",s
     ## parallel function in case meshlist != NULL
     parfunmeshlist <- function(i,data) {
         if (!is.list(data))
-            out <- closemeshKD(data[,,i],meshlist[[i]])
+            out <- projRead(data[,,i],meshlist[[i]])
         else
-            out <- closemeshKD(data[[i]],meshlist[[i]])
+            out <- projRead(data[[i]],meshlist[[i]])
         return(out)
     }
-    
+    parfunmeshfile <- function(i, data) {
+        if (!is.list(data))
+            out <- projRead(data[,,i],sur.name[i])
+        else
+            out <- projRead(data[[i]],sur.name[i])
+        return(out)
+
+    }
     if (is.null(meshlist)) {
-        for (j in 1:n) {
-            
-            repro <- projRead(dat.array[,,j], sur.name[j])
-            dat.array[,,j] <- t(repro$vb[1:3,])
-            vn.array[,,j] <- t(repro$normals[1:3,])
-        }
+        repro <- mclapply(1:n, parfunmeshfile,dat.array,mc.cores=mc.cores)
     } else {
         repro <- mclapply(1:n, parfunmeshlist,dat.array,mc.cores=mc.cores)
-        for (j in 1:n) {
-            reprotmp <- repro[[j]]         
-            dat.array[,,j] <- t(reprotmp$vb[1:3,])
-            vn.array[,,j] <- t(reprotmp$normals[1:3,])
-        }
     }
+    for (j in 1:n) {
+        reprotmp <- repro[[j]]         
+        dat.array[,,j] <- t(reprotmp$vb[1:3,])
+        vn.array[,,j] <- t(reprotmp$normals[1:3,])
+    }
+    
     
     if (!fixRepro)# use original positions for fix landmarks
         dat.array[fixLM,,] <- data.orig[fixLM,,]
@@ -290,18 +293,14 @@ slider3d <- function(dat.array,SMvector,outlines=NULL,surp=NULL,sur.path="sur",s
         
 ###projection onto surface
         if (is.null(meshlist)) {
-            for (j in 1:n) {
-                repro <- projRead(a.list[[j]],sur.name[j])
-                dataslide[,,j] <- t(repro$vb[1:3,])
-                vn.array[,,j] <- t(repro$normals[1:3,])
-            }
+            repro <- mclapply(1:n, parfunmeshfile,a.list,mc.cores=mc.cores)
         } else {
-            repro <- mclapply(1:n, parfunmeshlist,a.list, mc.cores=mc.cores)
-            for (j in 1:n) {
-                reprotmp <- repro[[j]]         
-                dataslide[,,j] <- t(reprotmp$vb[1:3,])
-                vn.array[,,j] <- t(reprotmp$normals[1:3,])
-            }
+            repro <- mclapply(1:n, parfunmeshlist,a.list,mc.cores=mc.cores)
+        }
+        for (j in 1:n) {
+            reprotmp <- repro[[j]]         
+            dataslide[,,j] <- t(reprotmp$vb[1:3,])
+            vn.array[,,j] <- t(reprotmp$normals[1:3,])
         }
         
         if (!fixRepro)# use original positions for fix landmarks
