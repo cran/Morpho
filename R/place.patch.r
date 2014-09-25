@@ -194,12 +194,15 @@ place.patch <- function(dat.array,path,atlas.mesh,atlas.lm,patch,curves=NULL,pre
                 slide[fix,] <- dat.array[fix,,i]
             else
                 slide[fix,] <- dat.array[fix,]
-            
-### use for mullitlayer meshes to avoid projection inside
-            if (!is.null(inflate)) {
+
+            if (!is.null(inflate) || !is.null(rhotol)) {
                 atlas.warp <- warp.mesh(atlas.mesh,atlas.lm,slide, silent=silent)
                 tps.lm <- projRead(tps.lm,atlas.warp,readnormals=TRUE,smooth=TRUE)
                 warp.norm <- tps.lm$normals[1:3,]### keep projected normals
+            }
+### use for mullitlayer meshes to avoid projection inside
+            if (!is.null(inflate)) {
+                
                 
                 tps.lm$vb[1:3,] <- tps.lm$vb[1:3,]+inflate*tps.lm$normals[1:3,] ###inflate outward along normals
                 tps.lm <- ray2mesh(tps.lm,tmp.mesh,inbound=TRUE,tol=tol) ### deflate in opposite direction
@@ -263,12 +266,15 @@ place.patch <- function(dat.array,path,atlas.mesh,atlas.lm,patch,curves=NULL,pre
             return(out)
         }
 
-        out <- foreach(i=1:n, .inorder=TRUE,.export=c("calcGamma",".calcTang_U_s"),.packages=c("Morpho","Rvcg")) %dopar% parfun(i)
+        out <- foreach(i=1:n, .inorder=TRUE,.errorhandling="pass",.export=c("calcGamma",".calcTang_U_s"),.packages=c("Morpho","Rvcg")) %dopar% parfun(i)
 
+        
         if (!usematrix && n > 1) {
             tmpout <- array(NA, dim=c(nrow(out[[1]]),ncol(out[[1]]),n))
-            for (i in 1:n)               
-                tmpout[,,i] <- out[[i]]
+            for (i in 1:n) {
+                if (is.matrix(out[[i]]))
+                    tmpout[,,i] <- out[[i]]
+            }
             out <- tmpout
             dimnames(out)[[3]] <-  dimnames(dat.array)[[3]]
         } else {

@@ -48,33 +48,38 @@
 #' 
 #' 
 #' @export
-rotonto <- function(x,y,scale=FALSE,signref=TRUE,reflection=TRUE,weights=NULL,centerweight=FALSE)
-{ 	reflect=0
-  	m <- dim(x)[2]
-        if (!is.null(weights))
-          weights <- weights/sum(weights)
-       
+rotonto <- function(x,y,scale=FALSE,signref=TRUE,reflection=TRUE,weights=NULL,centerweight=FALSE) {
+    reflect=0
+    m <- dim(x)[2]
+    if (!is.null(weights))
+        weights <- weights/sum(weights)
+
+    if (nrow(x) > 1) {
         X <- apply(x,2,scale,scale=F)
-  	Y <- apply(y,2,scale,scale=F)
-         if (centerweight && !is.null(weights)) {
-             xcent <- apply(X*weights,2,sum)
-             ycent <- apply(Y*weights,2,sum)
-             X <- scale(X,scale=F,center=xcent)
-             Y <- scale(Y,scale=F,center=ycent)
-         }
-        if (!is.null(weights)) {
-            Dn <- diag(weights)
-            X1 <- Dn%*%X
-            Y1 <- Dn%*%Y
-            XY <- crossprod(X1,Y1)
-        } else {
-            XY <- crossprod(X,Y)
-        }
-        sv1 <- svd(XY)
-        gamm <- tcrossprod(sv1$v,sv1$u)
-        
-  	if(sign(det(gamm))<1)
-            {	reflect <- 1
+        Y <- apply(y,2,scale,scale=F)
+    } else {
+        X <- x
+        Y <- y
+    }
+    if (centerweight && !is.null(weights)) {
+        xcent <- apply(X*weights,2,sum)
+        ycent <- apply(Y*weights,2,sum)
+        X <- scale(X,scale=F,center=xcent)
+        Y <- scale(Y,scale=F,center=ycent)
+    }
+    if (!is.null(weights)) {
+        Dn <- diag(weights)
+        X1 <- Dn%*%X
+        Y1 <- Dn%*%Y
+        XY <- crossprod(X1,Y1)
+    } else {
+        XY <- crossprod(X,Y)
+    }
+    sv1 <- svd(XY)
+    gamm <- tcrossprod(sv1$v,sv1$u)
+    
+    if(sign(det(gamm))<1)
+        {	reflect <- 1
 		if (signref && reflection)
                     cat("reflection involved\n")
                 
@@ -93,25 +98,26 @@ rotonto <- function(x,y,scale=FALSE,signref=TRUE,reflection=TRUE,weights=NULL,ce
                     }
                 }
             }
-        trans <- x[1,]-X[1,]
-  	transy <- y[1,]-Y[1,]
-        del <- sv1$d
-        
-  	ctrace <- function(MAT) sum(diag(crossprod(MAT)))
-    	if (scale) {
-            if (!is.null(weights))
-                bet <- sum(del)/ctrace(Y1)
-            else
-                bet <- sum(del)/ctrace(Y)
-            yrot <- bet*Y%*%gamm
-        } else {
-            bet <- 1
-            yrot <- Y%*%gamm
-        }
-	Y <- yrot  	
-	yrot <- t(t(yrot)+trans)
-        
-  	return(list(yrot=yrot,Y=Y,X=X,trans=trans,transy=transy,gamm=gamm,bet=bet,reflect=reflect))
+    trans <- x[1,]-X[1,]
+    transy <- y[1,]-Y[1,]
+    del <- sv1$d
+    
+    ctrace <- function(MAT) sum(diag(crossprod(MAT)))
+    if (scale) {
+        if (!is.null(weights))
+            bet <- sum(del)/ctrace(Y1)
+        else
+            bet <- sum(del)/ctrace(Y)
+        yrot <- bet*Y%*%gamm
+    } else {
+        bet <- 1
+        yrot <- Y%*%gamm
+    }
+    Y <- yrot  	
+    yrot <- t(t(yrot)+trans)
+    out <- list(yrot=yrot,Y=Y,X=X,trans=trans,transy=transy,gamm=gamm,bet=bet,reflect=reflect)
+    class(out) <- "rotonto"
+    return(out)
 }
 
 #' @rdname rotonto
@@ -120,24 +126,57 @@ rotreverse <- function(mat,rot)UseMethod("rotreverse")
 
 #' @rdname rotonto
 #' @export
-rotreverse.matrix <- function(mat,rot)
-  {
-    transfun <- function(x,trans) {
-        x <- x+trans
-    }
-    
-    out <- t(t(mat)-rot$trans)
-    out <- t(t(out%*%t(rot$gamm)*1/rot$bet)+rot$transy)
+rotreverse.matrix <- function(mat,rot){
+    hmat <- solve(getTrafo4x4(rot))
+    out <-homg2mat(hmat%*%mat2homg(mat))
     return(out)
-  }
+}
 
 #' @rdname rotonto
 #' @export
 rotreverse.mesh3d <- function(mat,rot)
-  {
-    x <- rotreverse(vert2points(mat),rot)
-    mat$vb[1:3,] <- t(x)
-    mat <- updateNormals(mat)
-    
-    return(mat)
-  }
+    {
+        x <- rotreverse(vert2points(mat),rot)
+        mat$vb[1:3,] <- t(x)
+         if (!is.null(mat$normals))
+        mat <- vcgUpdateNormals(mat)
+
+        return(mat)
+    }
+
+#' get 4x4 Transformation matrix
+#'
+#' get 4x4 Transformation matrix
+#' @param x object of class "rotonto"
+#'
+#' @return returns a 4x4 transformation matrix
+#' @examples
+#' data(boneData)
+#' rot <- rotonto(boneLM[,,1],boneLM[,,2])
+#' trafo <- getTrafo4x4(rot)
+#' @rdname getTrafo4x4
+#' @export
+getTrafo4x4 <- function(x)UseMethod("getTrafo4x4")
+
+#' @rdname getTrafo4x4
+#' @export
+getTrafo4x4.rotonto <- function(x) {
+    m <- ncol(x$gamm)
+    hgamm <- rbind(cbind(x$gamm,0),0);hgamm[m+1,m+1] <- 1
+    htrans <- diag(m+1);htrans[1:m,m+1] <- c(-x$transy)
+    htrans2 <- diag(m+1);htrans2[1:m,m+1] <- c(x$trans)
+    scale <- diag(m+1);diag(scale)[1:m] <- x$bet
+    hall <- htrans2%*%scale%*%t(hgamm)%*%htrans
+    return(hall)
+}
+
+mat2homg <- function(x) {
+    x <- rbind(t(x),1)
+    return(x)
+}
+
+homg2mat <- function(x) {
+    m <- nrow(x)
+    x <- t(x[1:(m-1),])
+    return(x)
+}

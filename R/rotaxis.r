@@ -5,12 +5,13 @@
 #' 
 #' @param u a vector around which to rotate
 #' @param theta angle in radians to rotate
+#' @param homogeneous logical: if TRUE a 4x4 rotation matrix is returned
 #' @return returns 3x3 rotation matrix
 #' @seealso \code{\link{rotaxis3d}}
 #' @references http://en.wikipedia.org/wiki/Rotation_matrix
 #' 
 #' @export
-rotaxisMat <- function(u,theta)
+rotaxisMat <- function(u,theta,homogeneous=FALSE)
   {
     crossmat <- function(x)
       {
@@ -21,6 +22,8 @@ rotaxisMat <- function(u,theta)
     u <- u/sqrt(sum(crossprod(u)))
     I <- diag(rep(1,3))
     R <- I*cos(theta)+sin(theta)*crossmat(u)+(1-(cos(theta)))*tcrossprod(u)
+    if (homogeneous)
+        R <- rbind(cbind(R,0),0);R[4,4] <- 1
     return(R)
   }
 
@@ -64,23 +67,38 @@ rotaxis3d <- function(x,pt1,pt2=c(0,0,0),theta) UseMethod("rotaxis3d")
 #' @rdname rotaxis3d
 #' @method rotaxis3d matrix
 #' @export
-rotaxis3d.matrix <- function(x,pt1,pt2=c(0,0,0),theta)
-  {
-    u <- pt2-pt1
-    ### translate axis
-    matrixTrans <- t(t(x)-pt1)
-    rotmatrix <- rotaxisMat(u,theta)
-    out <- t(t(matrixTrans%*%rotmatrix)+pt1)
+rotaxis3d.matrix <- function(x,pt1,pt2=c(0,0,0),theta) {
+    trafo <- getTrafoRotaxis(pt1,pt2,theta)
+    out <- applyTransform(x,trafo)
     return(out)
   }
 #' @rdname rotaxis3d
 #' @method rotaxis3d mesh3d
 #' @export
-rotaxis3d.mesh3d <- function(x,pt1,pt2=c(0,0,0),theta)
-  {
-    mat <- vert2points(x)
-    vb <- rotaxis3d(mat,pt1,pt2,theta)
-    x$vb[1:3,] <- t(vb)
-    x <- updateNormals(x)
+rotaxis3d.mesh3d <- function(x,pt1,pt2=c(0,0,0),theta) {
+    trafo <- getTrafoRotaxis(pt1,pt2,theta)
+    x <- applyTransform(x,trafo)
     invisible(x)
   }
+
+
+#' compute a 4x4 Transformation matrix for rotation around an arbitrary axis
+#'
+#' compute a 4x4 Transformation matrix for rotation around an arbitrary axis
+#' @param pt1 numeric vector of length 3, defining first point on the rotation
+#' axis.
+#' @param pt2 numeric vector of length 3, defining second point on the rotation
+#' axis.
+#' @param theta angle to rotate in radians. With pt1 being the viewpoint, the
+#' rotation is counterclockwise.
+#' @note the resulting matrix can be used in \code{\link{applyTransform}}
+#' @export
+getTrafoRotaxis <- function(pt1,pt2,theta) {
+    u <- pt2-pt1
+    m <- length(pt2)
+    htrans <- diag(m+1);htrans[1:m,m+1] <- c(-pt1)
+    htransinv <- diag(m+1);htrans[1:m,m+1] <- c(pt1)
+    rotmatrix <- rotaxisMat(u,theta,homogeneous=T)
+    trafo <- htransinv%*%rotmatrix%*%htrans
+    return(trafo)
+}
