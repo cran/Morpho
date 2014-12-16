@@ -8,8 +8,8 @@
 #' \tabular{ll}{
 #' Package: \tab Morpho\cr
 #' Type: \tab Package\cr
-#' Version: \tab 2.1\cr
-#' Date: \tab 2014-09-25\cr
+#' Version: \tab 2.2\cr
+#' Date: \tab 2014-12-16\cr
 #' License: \tab GPL\cr
 #' LazyLoad: \tab yes\cr
 #' }
@@ -38,7 +38,7 @@
 #' @import doParallel
 #' @importFrom colorRamps blue2green2red
 #' @importFrom foreach foreach '%dopar%' '%do%'
-#' @importFrom Matrix sparseMatrix diag crossprod solve as.matrix t
+#' @importFrom Matrix sparseMatrix diag crossprod solve as.matrix t cBind
 #' @importFrom parallel mclapply detectCores
 #' @importFrom rgl lines3d open3d points3d rgl.bg rgl.bringtotop rgl.clear rgl.close  rgl.cur rgl.pop rgl.snapshot shade3d spheres3d text3d translate3d wire3d
 #' @importFrom yaImpute ann
@@ -146,4 +146,28 @@ regdist.raw <- function (...)
 {
   .Deprecated("regdist", package="Morpho")
   regdist(...)
+}
+
+#' @rdname Morpho-deprecated
+#' @export 
+crossp <- function (...)
+{
+  .Deprecated("crossProduct", package="Morpho")
+  crossProduct(...)
+}
+
+#' @rdname Morpho-deprecated
+#' @export 
+tanplan <- function (...)
+{
+  .Deprecated("tangentPlane", package="Morpho")
+  tangentPlane(...)
+}
+
+#' @rdname Morpho-deprecated
+#' @export 
+conv2backf <- function (...)
+{
+  .Deprecated("invertFaces", package="Morpho")
+  invertFaces(...)
 }

@@ -6,13 +6,13 @@
 #' 
 #' @param lm k x 3 or k x 2 matrix containing landmark data to be slidden.
 #' @param reference k x 3 or k x 2 matrix containing landmark of the reference
-#' @param SMvector A vector containing the landmarks on the curve(s) that are
+#' @param SMvector A vector containing the row indices of (semi-) landmarks on the curve(s) that are
 #' allowed to slide
 #' @param outlines A vector (or if threre are several curves) a list of vectors
 #' (containing the rowindices) of the (Semi-)landmarks forming the curve(s) in
 #' the successive position on the curve - including the beginning and end
 #' points, that are not allowed to slide.
-#' @param surp A vector containing Semilandmarks positioned on surfaces.
+#' @param surp integer vector containing the row indices of semi-landmarks positioned on surfaces.
 #' @param sur.name character: containing the filename of the corresponding
 #' surface.When specified, mesh has to be NULL.
 #' @param mesh triangular mesh of class "mesh3d" loaded into the R workspace,
@@ -30,6 +30,12 @@
 #' @param fixRepro logical: if \code{TRUE}, fix landmarks will also be
 #' projected onto the surface. If you have landmarks not on the surface, select
 #' \code{fixRepro=FALSE}
+#' @param missing vector of integers, specifying row indices of missing (semi-)landmarks. They will be relaxed freely in 3D and not projected onto the target (works only for 2D data).
+#' @param bending if TRUE, bending energy will be minimized, Procrustes distance otherwise (not suggested with large shape differences)
+#' @param stepsize integer: dampening factor for the amount of sliding.
+#' Useful to keep semi-landmarks from sliding too far off the surface.
+#' The displacement is calculated as  \eqn{\Upsilon = \Upsilon^0 + stepsize * UT}{Y = Y0 + stepsize * UT}.
+#' Default is set to 1 for bending=TRUE and 0.5 for bending=FALSE.
 #' @return returns kx3 matrix of slidden landmarks
 #' @author Stefan Schlager
 #' @seealso \code{\link{slider3d}}
@@ -49,32 +55,57 @@
 #' # define surface patch by specifying row indices of matrices
 #' # all except those defined as fix
 #' surp <- c(1:dim(shortnose.lm)[1])[-fix]
-#' ## to reduce this example's computation time,
-#' # we only use the right hand semi-landmarks
-#' # (which keeps the left hand ones fix)
-#' surp <- surp[1:316]
-#' 
-#' relax <- relaxLM(shortnose.lm[1:323, ],
-#'          longnose.lm[1:323, ], mesh=shortnose.mesh, iterations=1,
+#'  
+#' relax <- relaxLM(shortnose.lm,
+#'          longnose.lm, mesh=shortnose.mesh, iterations=1,
 #'          SMvector=fix, deselect=TRUE, surp=surp)
+#'
+#' ## example minimizing Procrustes distance when displacement is not
+#' ## dampened by stepsize
+#' relaxProcD <- relaxLM(shortnose.lm,
+#'          longnose.lm, mesh=shortnose.mesh, iterations=1,
+#'          SMvector=fix, deselect=TRUE, surp=c(1:623)[-fix],bending=FALSE,stepsize=1)
 #' 
 #' \dontrun{
 #' # visualize differences red=before and green=after sliding
-#' deformGrid3d(shortnose.lm[1:323, ], relax, ngrid=0)
+#' deformGrid3d(shortnose.lm, relax, ngrid=0)
+#'
+#'  
+#' # visualize differences minimizing Procrusted distances red=before and green=after sliding
+#'
+#' deformGrid3d(shortnose.lm, relaxProcD, ngrid=0)
+#' ## no smooth displacement, now let's check the distances:
+#' rot2ref <- rotonto(relaxProcD,longnose.lm)
+#' angle.calc(rot2ref$X,rot2ref$Y)
+#' # 0.2492027 Procrustes distance between reference and slided shape
+#' # (minimizing Procrustes distance)
+#' rot2refBend <- rotonto(relax,longnose.lm)
+#' angle.calc(rot2refBend$X,rot2refBend$Y)
+#' # 0.2861322 Procrustes distance between reference and slided shape
+#' # (minimizing bending energy)
+#' 
+#' rot2ref <- rotonto(shortnose.lm,longnose.lm)
+#' angle.calc(rot2refOrig$X,rot2refOrig$Y)
+#' # 0.3014957 Procrustes distance between reference and original shape
+#' ##result: while minimizing Procrustes distance, displacement is not
+#' ##guaranteed to be smooth
+#' 
 #' # add surface
 #' wire3d(shortnose.mesh, col="white")
 #' }
 #' 
 #' @export
-relaxLM <- function(lm,reference,SMvector,outlines=NULL,surp=NULL,sur.name=NULL,mesh=NULL,tol=1e-05,deselect=FALSE,inc.check=TRUE,iterations=0, fixRepro=TRUE)
-{
+relaxLM <- function(lm,reference,SMvector,outlines=NULL,surp=NULL,sur.name=NULL,mesh=NULL,tol=1e-05,deselect=FALSE,inc.check=TRUE,iterations=0, fixRepro=TRUE, missing=NULL, bending=TRUE,stepsize=ifelse(bending,1,0.5)) {
     
     k <- dim(lm)[1]
     m <- dim(lm)[2]
-    
+    free <- NULL
     p1 <- 10^12
     lm.orig <- lm
-    L <- CreateL(reference)
+    reference <- apply(reference,2,scale,scale=F)
+    if (bending)
+        L <- CreateL(reference,output="Lsubk3")
+
     if (deselect)
         fixLM <- SMvector
     else if (length(SMvector) < k)
@@ -85,19 +116,23 @@ relaxLM <- function(lm,reference,SMvector,outlines=NULL,surp=NULL,sur.name=NULL,
     if (iterations == 0)
         iterations <- 1e10
     if (m == 3) {
-    cat(paste("Points will be initially projected onto surfaces","\n","-------------------------------------------","\n"))
-    
+        cat(paste("Points will be initially projected onto surfaces","\n","-------------------------------------------","\n"))
+        
         if (is.null(mesh)) {
-            a <- projRead(lm, sur.name)
-            vs <- t(a$vb[1:3,])
-            vn <- t(a$normals[1:3,])
+            tmp <- projRead(lm, sur.name)
+            
         } else {
-            tmp <- closemeshKD(lm,mesh)
-            vs <- vert2points(tmp)
-            vn <- t(tmp$normals[1:3,])
+            tmp <- projRead(lm,mesh)
         }
+        vs <- vert2points(tmp)
+        vn <- t(tmp$normals[1:3,])
+        
         if (!fixRepro)# use original positions for fix landmarks
             vs[fixLM,] <- lm.orig[fixLM,]
+        if (length(missing)) {
+            free <- missing
+            vs[missing,] <- lm.orig[missing,]
+        }
     } else {
         vs <- lm
     }
@@ -105,24 +140,35 @@ relaxLM <- function(lm,reference,SMvector,outlines=NULL,surp=NULL,sur.name=NULL,
     while (p1 > tol && count <= iterations) {
         lm_old <- vs
         cat(paste("Iteration",count,sep=" "),"..\n")  # reports which Iteration is calculated
+        if (!bending) {
+            rot <- rotonto(reference,vs,reflection=FALSE,scale=TRUE)
+            vs <- rot$yrot
+            if (m == 3)
+                vn <- vn%*%rot$gamm
+        }
         if (m == 3)
-            U <- .calcTang_U_s(vs,vn,SMvector=SMvector,outlines=outlines,surface=surp,deselect=deselect)
+            U <- .calcTang_U_s(vs,vn,SMvector=SMvector,outlines=outlines,surface=surp,deselect=deselect,free=free)
         else
             U <- .calcTang_U(vs,SMvector=SMvector,outlines=outlines,deselect=deselect)
-        dataslido <- calcGamma(U$Gamma0,L$Lsubk3,U$U,dims=m)$Gamatrix
+        if (bending)
+            dataslido <- calcGamma(U$Gamma0,L$Lsubk3,U$U,dims=m,stepsize=stepsize)
+        else {
+            dataslido <- calcProcDGamma(U$U,U$Gamma0,reference,dims=m,stepsize=stepsize)
+            dataslido <- rotreverse(dataslido,rot)
+        }
         if (m == 3) {
             if (is.null(mesh)) {
-                a <- projRead(dataslido, sur.name)
-                vs <- t(a$vb[1:3,])
-                vn <- t(a$normals[1:3,])
-                
+                tmp <- projRead(dataslido, sur.name)
             } else {
-                tmp <- closemeshKD(dataslido,mesh)
-                vs <- vert2points(tmp)
-                vn <- t(tmp$normals[1:3,])
+                tmp <- projRead(dataslido,mesh)
             }
+            vs <- vert2points(tmp)
+            vn <- t(tmp$normals[1:3,])
+            
             if (!fixRepro)# use original positions for fix landmarks
                 vs[fixLM,] <- lm.orig[fixLM,]
+            if (length(missing))
+                vs[missing,] <- dataslido[missing,]
         } else {
             vs <- dataslido
         }
@@ -135,12 +181,17 @@ relaxLM <- function(lm,reference,SMvector,outlines=NULL,surp=NULL,sur.name=NULL,
                 vs <- lm_old
                 cat(paste("Distance between means starts increasing: value is ",p1, ".\n Result from last iteration step will be used. \n"))
                 p1 <- 0
+                count <- count+1   
             } else {
                 cat(paste("squared distance between iterations:",p1,sep=" "),"\n","-------------------------------------------","\n")
-                count <- count+1         
+                count <- count+1
             }
+        } else {
+            cat(paste("squared distance between iterations:",p1,sep=" "),"\n","-------------------------------------------","\n")
+            count <- count+1
         }
     }
+    gc()
     return(vs)
 }
 

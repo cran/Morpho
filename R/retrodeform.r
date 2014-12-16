@@ -26,11 +26,11 @@ getLocalStretchNoArticulate <- function(mat,pairedLM,hmult=5) {
         Hstar <- Tinv%*%eigCQ$vectors
         w1 <- Hstar[,3]
         w1 <- w1/sqrt(sum(w1^2))
-        n <- crossp(Hstar[,1],Hstar[,2])
+        n <- crossProduct(Hstar[,1],Hstar[,2])
         n <- n/sqrt(sum(n^2))
         if (crossprod(n,w1) < 0)
             n <- -n
-        wtan <- tanplan(n)
+        wtan <- tangentPlane(n)
         wtan <- cbind(wtan$z,wtan$y)
         m <- as.vector(wtan%*%t(wtan)%*%w1)
         m <- m/sqrt(sum(m^2))
@@ -80,7 +80,7 @@ GetPhi <- function(P,Q,hmult) {
 #' @param alpha factor controlling spacing along x-axis
 #' @return
 #' \item{deformed}{matrix containing deformed landmarks}
-#' \item{orig}{matrix containing original landmarks in the same order as the deformed ones}
+#' \item{orig}{matrix containing original landmarks}
 #' @references Ghosh, D.; Amenta, N. & Kazhdan, M. Closed-form Blending of Local Symmetries. Computer Graphics Forum, Wiley-Blackwell, 2010, 29, 1681-1688
 
 #' @export
@@ -177,7 +177,7 @@ retroDeform3d <- function(mat,pairedLM,hmult=5,alpha=0.01) {
     out1[,1] <- -out[,1]
     deformed <- rbind(out,out1)
     orig <- rbind(P,Q)
-    return(list(deformed=deformed,orig=orig))
+    return(list(deformed=tps3d(mat,orig,deformed),orig=mat))
 }
 
 #' symmetrize a triangular mesh
@@ -196,7 +196,7 @@ retroDeform3d <- function(mat,pairedLM,hmult=5,alpha=0.01) {
 #' 
 #' @return
 #' \item{mesh}{symmetrized mesh}
-#' \item{landmarks}{a list containing the deformed and original bilateral landmarks}
+#' \item{landmarks}{a list containing the deformed and original landmarks}
 #' 
 #' @export
 retroDeformMesh <- function(mesh,mat,pairedLM,hmult=5,alpha=0.01,rot=TRUE,lambda=0) {

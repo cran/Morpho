@@ -33,6 +33,7 @@
 #' defined by use.lm will be centered according to the centroid of the complete
 #' configuration. Otherwise orp will be set to FALSE to avoid erroneous
 #' projection into tangent space.
+#' @param pcAlign logical: if TRUE, the shapes are aligned by the principal axis of the first specimen
 #' @param distfun character: "riemann" requests a Riemannian distance for
 #' calculating distances to mean, while "angle" uses an approximation by
 #' calculating the angle between rotated shapes on the unit sphere.
@@ -52,8 +53,13 @@
 #' convergence).  0 means iteration until convergence.
 #' @param initproc Logical: indicating if the first Relaxation step is
 #' performed against the mean of an initial Procrustes superimposition.
-#' Symmetric configurations will be relaxed against a perfectly symmetrical
-#' mean.
+#' Symmetric configurations will be relaxed against a perfectly symmetrical mean.
+#' @param bending if TRUE, bending energy will be minimized, Procrustes distance otherwise (not suggested with large shape differences)
+#' @param stepsize integer: dampening factor for the sliding.
+#' Useful to keep semi-landmarks from sliding too far off the surface.
+#' The displacement is calculated as \cr
+#' \code{stepsize * displacement}.
+#' 
 #' @return
 #' \item{size }{a vector containing the Centroid Size of the configurations}
 #' \item{rotated }{k x m x n array of the rotated configurations}
@@ -138,7 +144,7 @@
 #' 
 #' 
 #' @export
-procSym <- function(dataarray, scale=TRUE, reflect=TRUE, CSinit=TRUE,  orp=TRUE, tol=1e-05, pairedLM=NULL, sizeshape=FALSE, use.lm=NULL, center.part=FALSE, distfun=c("angle", "riemann"), SMvector=NULL, outlines=NULL, deselect=FALSE, recursive=TRUE,iterations=0, initproc=FALSE)
+procSym <- function(dataarray, scale=TRUE, reflect=TRUE, CSinit=TRUE,  orp=TRUE, tol=1e-05, pairedLM=NULL, sizeshape=FALSE, use.lm=NULL, center.part=FALSE, pcAlign=TRUE, distfun=c("angle", "riemann"), SMvector=NULL, outlines=NULL, deselect=FALSE, recursive=TRUE,iterations=0, initproc=FALSE, bending=TRUE,stepsize=1)
 {
     t0 <- Sys.time()     
     A <- dataarray
@@ -164,7 +170,7 @@ procSym <- function(dataarray, scale=TRUE, reflect=TRUE, CSinit=TRUE,  orp=TRUE,
     if (!is.null(SMvector)) { # includes sliding of Semilandmarks
         if (is.null(outlines))
             stop("please specify outlines")
-        dataslide <- Semislide(A, SMvector=SMvector,outlines=outlines,tol=tol,deselect=deselect,recursive=recursive,iterations=iterations,pairedLM=pairedLM,initproc=initproc)
+        dataslide <- Semislide(A, SMvector=SMvector,outlines=outlines,tol=tol,deselect=deselect,recursive=recursive,iterations=iterations,pairedLM=pairedLM,initproc=initproc, bending=bending,stepsize=stepsize)
         A <- dataslide
         for (i in 1:n)
             CS <- apply(A,3,cSize)
@@ -188,7 +194,7 @@ procSym <- function(dataarray, scale=TRUE, reflect=TRUE, CSinit=TRUE,  orp=TRUE,
     cat("performing Procrustes Fit ")
     
     if (!is.null(use.lm)) { ### only use subset for rotation and scale
-        proc <- ProcGPA(Aall[use.lm,,],scale=scale,CSinit=CSinit,reflection=reflect)
+        proc <- ProcGPA(Aall[use.lm,,],scale=scale,CSinit=CSinit,reflection=reflect,pcAlign=pcAlign)
         tmp <- Aall
         for (i in 1:dim(Aall)[3]) {
             tmp[,,i] <- rotonmat(Aall[,,i],Aall[use.lm,,i],proc$rotated[,,i],scale=TRUE, reflection=reflect)
@@ -200,7 +206,7 @@ procSym <- function(dataarray, scale=TRUE, reflect=TRUE, CSinit=TRUE,  orp=TRUE,
         proc$rotated <- tmp
         proc$mshape <- arrMean3(tmp) ##calc new meanshape
     } else
-        proc <- ProcGPA(Aall,scale=scale,CSinit=CSinit, reflection=reflect)
+        proc <- ProcGPA(Aall,scale=scale,CSinit=CSinit, reflection=reflect,pcAlign=pcAlign)
     
     procrot <- proc$rotated
     dimna <- dimnames(dataarray)

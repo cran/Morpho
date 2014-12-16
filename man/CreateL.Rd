@@ -3,17 +3,18 @@
 \alias{CreateL}
 \title{Create Matrices necessary for Thin-Plate Spline}
 \usage{
-CreateL(matrix, lambda = 0, blockdiag = TRUE)
+CreateL(matrix, lambda = 0, output = c("L", "Linv", "Lsubk", "Lsubk3"))
 }
 \arguments{
 \item{matrix}{k x 3 or k x 2 matrix containing landmark coordinates.}
 
 \item{lambda}{numeric: regularization factor}
 
-\item{blockdiag}{logical: request blockdiagonal matrix Lsubk3 needed for
+\item{output}{character vector: select which matrices to create. Can be a vector containing any combination of the strings: \code{ "L","Linv","Lsubk", "Lsubk3"}.
 sliding of semilandmarks.}
 }
 \value{
+depending on the choices in \code{output}:
 \item{L }{Matrix L as specified in Bookstein (1989)}
 \item{Linv }{Inverse of matrix L as specified in Bookstein (1989)}
 \item{Lsubk }{uper left k x k submatrix of \code{Linv}}

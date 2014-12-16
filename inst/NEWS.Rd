@@ -2,12 +2,43 @@
 \title{News for Package 'Morpho'}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
+\section{Changes in Morpho version 2.2 (2014-12-16)}{
+  \subsection{New features}{
+    \itemize{
+      \item slider3d, relaxLM and procSym now allow minimizing
+      Procrustes distance
+      \item added orientation check in pcAlign to avoid reflections
+      \item massive speed improvements in sliding semi-landmarks routines
+      \item added options missing/missingList in relaxLM and slider3d to
+      allow using semi-landmarks in "thin-air"
+      \item added helper function createMissingList
+      \item added function points2plane for projecting a
+      point/pointcloud onto a plane.
+      \item pcAlign with y missing now centers a shape and aligns it by
+      its principal axes.
+      \item added option pcAlign in procSym and ProcGPA to
+  enable/disable alignment of sample by principal axes
+    }
+  }
+  \subsection{bugfixes and minor changes}{
+    \itemize{
+      \item renamed conv2backf to invertFaces
+      \item renamed crossp to crossProduct
+      \item renamed tanplan to tangentPlane
+      \item reorient faces if reflections are involved in applyTransform
+      \item made read.lmdta more versatile
+      \item fixed an issue with argument "size" in deformGrid3d
+      \item set default method to "vcg" in meshDist
+    }
+  }
+}
+
 \section{Changes in Morpho version 2.1 (2014-09-25)}{
   \subsection{New features}{
     \itemize{
       \item added new function mirror to mirror a landmark configuration
-  or a mesh and registering onto the original one.
-      \item added new functions retrodeform3d and  retroDeformMesh for removing affine
+      or a mesh and registering onto the original one.
+      \item added new functions retroDeform3d and  retroDeformMesh for removing affine
       deformation from a 3D-meshes and pointclouds
       \item deformGrid3d now also accepts meshes
       \item added function classify for CVA and groupPCA for creating
