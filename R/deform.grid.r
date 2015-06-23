@@ -73,8 +73,8 @@ deformGrid3d <- function(matrix,tarmatrix,ngrid=0,lwd=1,showaxis=c(1, 2), show=c
     x2 <- x1 <- x3 <- c(0:(ngrid-1))/ngrid;
     x0 <- as.matrix(expand.grid(x1,x2,x3))
     
-    cent.mat <- apply(matrix,2,scale,scale=F)
-    mean.mat <- apply(matrix,2,mean)
+    cent.mat <- scale(matrix, scale=FALSE)
+    mean.mat <- colMeans(matrix)
     
     if (ngrid > 1) {
         xrange <- diff(range(matrix[,1]))
@@ -86,13 +86,13 @@ deformGrid3d <- function(matrix,tarmatrix,ngrid=0,lwd=1,showaxis=c(1, 2), show=c
         maxi <- max(c(xrange,yrange,zrange,xrange1,yrange1,zrange1))
         maxi <- 1.2*maxi
         x0 <- maxi*x0
-        x0 <- apply(x0,2,scale,scale=FALSE)
+        x0 <- scale(x0, scale=FALSE)
         if (pcaxis)
             space <- eigen(crossprod(cent.mat))$vectors
         else
             space <- diag(3)
         x0 <- t(t(x0%*%space)+mean.mat)
-        x0 <- tps3d(x0,matrix,tarmatrix)
+        x0 <- tps3d(x0,matrix,tarmatrix,lambda = 1e-8)
         
         ## create deformation cube
         outmesh <- list(vb = rbind(t(x0),1))

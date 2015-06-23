@@ -192,20 +192,20 @@ retroDeform3d <- function(mat,pairedLM,hmult=5,alpha=0.01) {
 #' @param rot logical: if TRUE the deformed landmarks are rotated back onto the original ones
 #' @param lambda control parameter passed to \code{\link{tps3d}}
 #' 
-#' @details this function performs \code{\link{retroDeform3d}} and deforms the mesh accordingly using the function \code{\link{warp.mesh}}.
+#' @details this function performs \code{\link{retroDeform3d}} and deforms the mesh accordingly using the function \code{\link{tps3d}}.
 #' 
 #' @return
 #' \item{mesh}{symmetrized mesh}
 #' \item{landmarks}{a list containing the deformed and original landmarks}
 #' 
 #' @export
-retroDeformMesh <- function(mesh,mat,pairedLM,hmult=5,alpha=0.01,rot=TRUE,lambda=0) {
+retroDeformMesh <- function(mesh,mat,pairedLM,hmult=5,alpha=0.01,rot=TRUE,lambda=1e-8) {
     deform <- retroDeform3d(mat,pairedLM,hmult=hmult,alpha=alpha)
     if (rot) 
         deform$deformed <- rotonto(deform$orig,deform$deformed,reflection = FALSE)$yrot
     
     
-    wmesh <- warp.mesh(mesh,deform$orig,deform$deformed,lambda = lambda,silent = TRUE)
+    wmesh <- tps3d(mesh,deform$orig,deform$deformed,lambda = lambda,silent = TRUE)
     
     return(list(mesh=wmesh,landmarks=deform))
 }

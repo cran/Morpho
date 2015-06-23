@@ -15,7 +15,7 @@
 #' \item{Lsubk3 }{Matrix used for sliding in \code{\link{slider3d}} and \code{\link{relaxLM}}. Only available if \code{blockdiag = TRUE}}
 #' @note This function is not intended to be called directly - except for
 #' playing around to grasp the mechansims of the Thin-Plate Spline.
-#' @seealso \code{\link{tps3d}, \link{warp.mesh}}
+#' @seealso \code{\link{tps3d}}
 #' @references Gunz, P., P. Mitteroecker, and F. L. Bookstein. 2005.
 #' Semilandmarks in Three Dimensions, in Modern Morphometrics in Physical
 #' Anthropology. Edited by D. E. Slice, pp. 73-98. New York: Kluwer
@@ -44,7 +44,7 @@
 #' sqrt(sum(be3^2))
 #' @importFrom Matrix bdiag
 #' @export
-CreateL <- function(matrix,lambda=0, output=c("L","Linv","Lsubk", "Lsubk3"))
+CreateL <- function(matrix,lambda=1e-8, output=c("L","Linv","Lsubk", "Lsubk3"))
 {
     if (ncol(matrix) == 3) {
         out <- list()
@@ -90,7 +90,7 @@ CreateL <- function(matrix,lambda=0, output=c("L","Linv","Lsubk", "Lsubk3"))
     } else
         stop("only works for matrices with 2 or 3 columns")
 }
-CreateL2D <- function(matrix, lambda=0, blockdiag=TRUE)
+CreateL2D <- function(matrix, lambda=1e-8, blockdiag=TRUE)
 {
     k <- dim(matrix)[1]
     K <- matrix(0,k,k)

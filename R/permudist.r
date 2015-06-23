@@ -7,11 +7,14 @@
 #' @param data array or matrix containing data
 #' @param groups factors determining grouping.
 #' @param rounds number of permutations
-#' @param which integer (optional): in case the factor levels are > 2 this determins which
-#' factorlevels to use
+#' @param which integer (optional): in case the factor levels are > 2 this determins which factorlevels to use
+#' @param p.adjust.method method to adjust p-values for multiple comparisons see \code{\link{p.adjust.methods}} for options.
+#' 
 #' @return
 #' \item{dist }{distance matrix with distances between actual group means}
+#' \item{p.adjust.method}{method used for p-value adjustion}
 #' \item{p.value }{distance matrix containing pairwise p-values obtained by comparing the actual distance to randomly acquired distances}
+#' 
 #' 
 #' @examples
 #' 
@@ -27,7 +30,7 @@
 #' 
 #' 
 #' @export 
-permudist <- function(data, groups, rounds=1000, which=NULL)
+permudist <- function(data, groups, rounds=1000, which=NULL,p.adjust.method= p.adjust.methods)
 {
     if (rounds == 0)
         rounds <- 1
@@ -79,9 +82,12 @@ permudist <- function(data, groups, rounds=1000, which=NULL)
                 count <- count+1
             }
         }
+        probs[upper.tri(probs)] <- p.adjust(probs[upper.tri(probs)],method=p.adjust.method)
+        
         probs <- as.dist(probs+t(probs))
         dist <- as.dist(dist+t(dist))
         out$p.value <-probs
+        out$p.adjust.method <- match.arg(p.adjust.method,p.adjust.methods)
     }
     out$dist <- dist
 

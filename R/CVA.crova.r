@@ -19,15 +19,12 @@
     Gmeans <- matrix(0, ng, l)
     rownames(Gmeans) <- lev
     for (i in 1:ng) {
-        if (gsizes[i] > 1)
-            Gmeans[i, ] <- apply(N[groups==lev[i], ], 2, mean)
-        else
-            Gmeans[i, ] <- N[groups==lev[i], ]
+        Gmeans[i, ] <- colMeans(N[groups==lev[i], ,drop=FALSE])
     }
     if (weighting) {
-        Grandm <- apply(Gmeans*gsizes,2,sum)/n ## calculate weighted Grandmean (thanks to Anne-Beatrice Dufour for the bug-fix)
+        Grandm <- colSums(Gmeans*gsizes)/n ## calculate weighted Grandmean (thanks to Anne-Beatrice Dufour for the bug-fix)
     } else {
-        Grandm <- as.vector(apply(Gmeans, 2, mean))
+        Grandm <- colMeans(Gmeans)
     }
     Tmatrix <- N
     N <- sweep(N, 2, Grandm) #center data according to Grandmean
@@ -48,8 +45,8 @@
     Ec <- eigcoW$values
     Ec2 <- Ec
     
-    if (min(E) < tolinv)
-        cat(paste("singular Covariance matrix: General inverse is used. Threshold for zero eigenvalue is", tolinv, "\n"))
+    #if (min(E) < tolinv)
+    #    cat(paste("singular Covariance matrix: General inverse is used. Threshold for zero eigenvalue is", tolinv, "\n"))
     for (i in 1:length(eigW$values)) {
         if (Ec[i] < tolinv) {
             E[i] <- Ec[i] <- Ec2[i] <- 0
@@ -77,6 +74,3 @@
     rownames(meanscores) <- lev
     return(list(CV=CV,Grandmean=Grandm,meanscores=meanscores))
 }
-
-
-

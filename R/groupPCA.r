@@ -26,8 +26,7 @@
 #' matrix}
 #' \item{groupPCs }{PC-axes - i.e. eigenvectors of the groupmean covariance
 #' matrix}
-#' \item{Variance }{table displaying the variance explained by eache
-#' eigenvalue}
+#' \item{Variance }{table displaying the between-group variance explained by each between group PC}
 #' \item{Scores }{Scores of all observation in the PC-space}
 #' \item{probs }{p-values of pairwise groupdifferences - based on
 #' permuation testing}
@@ -36,6 +35,10 @@
 #' \item{Grandmean }{Grand mean}
 #' \item{CV }{Cross-validated scores}
 #' \item{groups }{grouping Variable}
+#' \item{resPCs}{PCs orthogonal to the between-group PCs}
+#' \item{resPCscores}{Scores of the residualPCs}
+#' \item{resVar}{table displaying the residual variance explained by each residual PC}
+#' \item{combinedVar}{table displaying the overall variance explained by the between-group PCs and residual PC. Check the rownames to identify which type belongs to which value}
 #' @author Stefan Schlager
 #' @seealso \code{\link{CVA}}
 #' @references Mitteroecker P, Bookstein F 2011. Linear Discrimination,
@@ -69,13 +72,13 @@
 #' grandmean <- matrix(gpca$Grandmean, dims[1], dims[2])
 #' ## calculate landmarks from first between-group PC
 #' #                   (+2 and -2 standard deviations)
-#' gpcavis2sd<- showPC(2*sd(gpca$Scores[,1]), gpca$groupPCs, grandmean)
-#' gpcavis2sd.neg<- showPC(-2*sd(gpca$Scores[,1]), gpca$groupPCs, grandmean)
+#' gpcavis2sd<- showPC(2*sd(gpca$Scores[,1]), gpca$groupPCs[,1], grandmean)
+#' gpcavis2sd.neg<- showPC(-2*sd(gpca$Scores[,1]), gpca$groupPCs[,1], grandmean)
 #' deformGrid3d(gpcavis2sd, gpcavis2sd.neg, ngrid = 0)
 #' require(rgl)
 #' ## visualize grandmean mesh
 #' 
-#' grandm.mesh <- warp.mesh(skull_0144_ch_fe.mesh, boneLM[,,1],grandmean)
+#' grandm.mesh <- tps3d(skull_0144_ch_fe.mesh, boneLM[,,1],grandmean)
 #' wire3d(grandm.mesh, col="white")
 #' spheres3d(grandmean, radius=0.005)
 #' }
@@ -108,12 +111,9 @@ groupPCA <- function(dataarray, groups, rounds = 10000,tol=1e-10,cv=TRUE,mc.core
     Gmeans <- matrix(0, ng, l)
     rownames(Gmeans) <- lev
     for (i in 1:ng) {
-        if(gsizes[i] > 1)
-            Gmeans[i, ] <- apply(N[groups==lev[i], ,drop=F], 2, mean)
-        else
-            Gmeans[i, ] <- N[groups==lev[i], ,drop=F]
+        Gmeans[i, ] <- colMeans(N[groups==lev[i], ,drop=F])
     }
-    if (weighting==TRUE)
+    if (weighting)
         wt <- gsizes
     else
         wt <- rep(1,ng)
@@ -126,21 +126,18 @@ groupPCA <- function(dataarray, groups, rounds = 10000,tol=1e-10,cv=TRUE,mc.core
     valScores <- which(eigenGmeans$values > tol)
     groupScores <- N%*%(eigenGmeans$vectors[,valScores])
     groupPCs <- eigenGmeans$vectors[,valScores]
-
+    residuals <- N-groupScores%*%t(groupPCs)
+    resPrcomp <- prcomp(residuals,center = F,tol=sqrt(tol))
+   
+    
 ###### create a neat variance table for the groupmean PCA ###### 
     values <- eigenGmeans$values[valScores]
-    if (length(values) == 1) {
-        Var <- values
-    } else {
-        Var <- matrix(NA,length(values),3)
-        Var[,1] <- values
-        for (i in 1:length(values)) 
-            Var[i,2] <- (values[i]/sum(values))*100
-        Var[1,3] <- Var[1,2]
-        for (i in 2:length(values))
-            Var[i,3] <- Var[i,2]+ Var[i-1,3]
-        colnames(Var) <- c("eigenvalues","% Variance","Cumulative %")
-    }
+    bgnames <- c(paste("bgPC",1:length(values),sep="_"))
+    Var <- createVarTable(values,FALSE,rownames = bgnames)
+    cnames <- c(paste("bgPC",1:length(values),sep="_"),paste("resPC",1:length(resPrcomp$sdev),sep="_"))
+    combinedVar <- createVarTable(c(values,resPrcomp$sdev^2),square = FALSE,rownames = cnames)
+    resnames <- paste("resPC",1:length(resPrcomp$sdev),sep="_")
+    resVar <- createVarTable(resPrcomp$sdev,square = TRUE,rownames = resnames)
 ### calculate between group distances ###
     
 ### Permutation Test for Distances	
@@ -179,8 +176,9 @@ CV=NULL
                 CV[i] <- crossval[[i]]
         }
     }
-    out <- list(eigenvalues=values,groupPCs=eigenGmeans$vectors[,valScores],Variance=Var,Scores=groupScores,probs=pmatrix.proc,groupdists=proc.distout,groupmeans=Gmeans,Grandmean=Grandm,CV=CV,groups=groups)
+    out <- list(eigenvalues=values,groupPCs=eigenGmeans$vectors[,valScores],Variance=Var,Scores=groupScores,probs=pmatrix.proc,groupdists=proc.distout,groupmeans=Gmeans,Grandmean=Grandm,CV=CV,groups=groups,resPCs=resPrcomp$rotation,resPCscores=resPrcomp$x,resVar=resVar,combinedVar=combinedVar)
     class(out) <- "bgPCA"
     return(out)
 }
+
 

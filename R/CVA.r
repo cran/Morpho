@@ -19,7 +19,7 @@
 #' Mahalanobis distances (from the pooled within-group covariance matrix) and Euclidean distance between group means is requested.If
 #' rounds = 0, no test is performed.
 #' @param cv logical: requests a Jackknife Crossvalidation.
-#' 
+#' @param p.adjust.method method to adjust p-values for multiple comparisons see \code{\link{p.adjust.methods}} for options.
 #' @return
 #' \item{CV }{A matrix containing the Canonical Variates}
 #' \item{CVscores }{A matrix containing the individual Canonical Variate scores}
@@ -138,7 +138,7 @@
 #' deformGrid3d(cvvis5,cvvisNeg5,ngrid = 0)
 #' }
 #' @export
-CVA <- function (dataarray, groups, weighting = TRUE, tolinv = 1e-10,plot = TRUE, rounds = 0, cv = FALSE) 
+CVA <- function (dataarray, groups, weighting = TRUE, tolinv = 1e-10,plot = TRUE, rounds = 0, cv = FALSE,p.adjust.method= p.adjust.methods) 
 {
     groups <- factor(groups)
     lev <- levels(groups)
@@ -170,15 +170,12 @@ CVA <- function (dataarray, groups, weighting = TRUE, tolinv = 1e-10,plot = TRUE
     
     Gmeans <- matrix(0, ng, l)
     for (i in 1:ng) {
-        if (gsizes[i] > 1)
-            Gmeans[i, ] <- apply(N[groups==lev[i], ], 2, mean)
-        else
-            Gmeans[i, ] <- N[groups==lev[i], ]
+        Gmeans[i, ] <- colMeans(N[groups==lev[i], ,drop=FALSE])
     }
     if (weighting) {
-        Grandm <- apply(Gmeans*gsizes,2,sum)/n ## calculate weighted Grandmean (thanks to Anne-Beatrice Dufour for the bug-fix)
+        Grandm <- colSums(Gmeans*gsizes)/n ## calculate weighted Grandmean (thanks to Anne-Beatrice Dufour for the bug-fix)
     } else {
-        Grandm <- as.vector(apply(Gmeans, 2, mean))
+        Grandm <- colMeans(Gmeans)
     }
     Tmatrix <- N
     N <- sweep(N, 2, Grandm) #center data according to Grandmean
@@ -250,7 +247,7 @@ CVA <- function (dataarray, groups, weighting = TRUE, tolinv = 1e-10,plot = TRUE
 
 
 ### Permutation Test for Distances	
-    Dist <- .CVAdists(N, groups, rounds,  winv )
+    Dist <- .CVAdists(N, groups, rounds,  winv ,p.adjust.method)
 
     if (n3) {
         Grandm <- matrix(Grandm, k,m)
@@ -260,7 +257,7 @@ CVA <- function (dataarray, groups, weighting = TRUE, tolinv = 1e-10,plot = TRUE
         groupmeans <- Gmeans
         rownames(groupmeans) <- lev
     }
-    classVec <- NULL
+    classVec <- groups
     classprobs <- NULL
     classdist <- NULL
     CVcv <- NULL
@@ -287,7 +284,7 @@ CVA <- function (dataarray, groups, weighting = TRUE, tolinv = 1e-10,plot = TRUE
         rownames(classprobs) <- rownames(N)
         colnames(classprobs) <- lev
         names(classVec) <- rownames(N)
-        classVec <- factor(classVec)
+        #classVec <- factor(classVec)
     } 
        
     out <- list(CV = CV, CVscores = CVscores, Grandm = Grandm,
@@ -314,3 +311,12 @@ probpost <- function(dist,prior) {
     return(posts)
 }
     
+#' @export
+print.CVA <- function(x,...) {
+    print(classify(x,cv=TRUE))
+}
+
+#' @export
+print.bgPCA <- function(x,...) {
+    print(classify(x,cv=TRUE))
+}

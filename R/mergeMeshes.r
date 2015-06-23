@@ -34,8 +34,9 @@ mergeMeshes <- function(...)
     outmesh <- args[[1]]
     if (dim(outmesh$vb)[1] == 3)
         outmesh$vb <- rbind(outmesh$vb, 1)
-    if (dim(outmesh$normals)[1] == 3)
-         outmesh$normals <- rbind(outmesh$normals, 1)
+    if (!is.null(outmesh$normals))
+        if (dim(outmesh$normals)[1] == 3)
+            outmesh$normals <- rbind(outmesh$normals, 1)
     if (!inherits(outmesh, "mesh3d"))
         stop("input must be meshes of class 'mesh3d'")
     
@@ -50,8 +51,10 @@ mergeMeshes <- function(...)
             tmpmesh$vb <- rbind(tmpmesh$vb,1)
         outmesh$vb <- cbind(outmesh$vb, tmpmesh$vb)
         # bind normals
-        if (dim(tmpmesh$normals)[1] == 3)
-            tmpmesh$normals <- rbind(tmpmesh$normals, 1)
+        if (!is.null(tmpmesh$normals)) {
+            if (dim(tmpmesh$normals)[1] == 3)
+                tmpmesh$normals <- rbind(tmpmesh$normals, 1)
+        }
         if (is.null(outmesh$normals) && !is.null(tmpmesh$normals)) {
             outmesh$normals <- cbind(rbind(matrix(0, 3, nvbout), 1), tmpmesh$normals)
         } else if (!is.null(outmesh$normals) && is.null(tmpmesh$normals)) {

@@ -1,4 +1,4 @@
-#' A toolbox providing methods for data-acquisitiopn, visualisation and
+#' A toolbox providing methods for data-acquisition, visualisation and
 #' statistical methods related to Geometric Morphometrics and shape analysis
 #' 
 #' A toolbox for Morphometric calculations. Including sliding operations for
@@ -8,8 +8,8 @@
 #' \tabular{ll}{
 #' Package: \tab Morpho\cr
 #' Type: \tab Package\cr
-#' Version: \tab 2.2\cr
-#' Date: \tab 2014-12-16\cr
+#' Version: \tab 2.3.0\cr
+#' Date: \tab 2015-06-18\cr
 #' License: \tab GPL\cr
 #' LazyLoad: \tab yes\cr
 #' }
@@ -21,9 +21,9 @@
 #' 
 #' Maintainer: Stefan Schlager \email{stefan.schlager@@uniklinik-freiburg.de}
 #' @note
-#' The pdf-version of Morpho-help can be obtained from CRAN on \url{http://cran.r-project.org/web/packages/Morpho/Morpho.pdf}
+#' The pdf-version of Morpho-help can be obtained from CRAN on \url{http://cran.r-project.org/package=Morpho}
 #'
-#' For more advanced operations on triangular surface meshes, check out my package Rvcg: \url{http://cran.r-project.org/web/packages/Rvcg/} or the code repository on github \url{https://github.com/zarquon42b/Rvcg}
+#' For more advanced operations on triangular surface meshes, check out my package Rvcg: \url{http://cran.r-project.org/package=Rvcg} or the code repository on github \url{https://github.com/zarquon42b/Rvcg}
 #'
 #'
 #' 
@@ -36,7 +36,6 @@
 #' @keywords package
 #' @useDynLib Morpho
 #' @import doParallel
-#' @importFrom colorRamps blue2green2red
 #' @importFrom foreach foreach '%dopar%' '%do%'
 #' @importFrom Matrix sparseMatrix diag crossprod solve as.matrix t cBind
 #' @importFrom parallel mclapply detectCores
@@ -170,4 +169,12 @@ conv2backf <- function (...)
 {
   .Deprecated("invertFaces", package="Morpho")
   invertFaces(...)
+}
+
+#' @rdname Morpho-deprecated
+#' @export 
+warp.mesh <- function (mesh,matr,matt,lambda=1e-8,updateNormals=TRUE, silent=FALSE)
+{
+  .Deprecated("tps3d", package="Morpho")
+  tps3d(x=mesh,refmat=matr,tarmat=matt,lambda=lambda)
 }
