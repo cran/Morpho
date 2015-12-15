@@ -27,7 +27,7 @@ applyTransform.matrix <- function(x,trafo,inverse=FALSE) {
         if (ncol(trafo$refmat) != ncol(x))
             stop("TPS must be computed from control points of the same dimensionality")
         if (inverse)
-            trafo <- computeTransform(trafo$tarmat,trafo$refmat,type="tps")
+            trafo <- computeTransform(trafo$refmat,trafo$tarmat,type="tps")
         out <- .fx(trafo$refmat,x,trafo$coeff)
     }
     return(out)
@@ -36,8 +36,7 @@ applyTransform.matrix <- function(x,trafo,inverse=FALSE) {
 #' @rdname applyTransform
 #' @export
 applyTransform.mesh3d <- function(x,trafo,inverse=FALSE) {
-    tmp <- vert2points(x)
-    x$vb[1:3,] <- t(applyTransform(tmp,trafo,inverse = inverse))
+    x$vb[1:3,] <- t(applyTransform(t(x$vb[1:3,]) ,trafo,inverse = inverse))
     ## case affine transformation
     reflect <- FALSE
     if (is.matrix(trafo)) {
@@ -53,10 +52,29 @@ applyTransform.mesh3d <- function(x,trafo,inverse=FALSE) {
         }
     ##case transform is tps
     if (!is.null(x$normals))
-        x <- vcgUpdateNormals(x)
+        x <- vcgUpdateNormals(x,silent=TRUE)
     return(x)
  }
 
+#' @rdname applyTransform
+#' @export
+applyTransform.default <- function(x,trafo,inverse=FALSE) {
+    x <- t(x)
+    if (is.matrix(trafo)) {
+        if (ncol(trafo) == 3 && ncol(x) ==3)
+            trafo <- mat3x3tomat4x4(trafo)
+        if (inverse)
+            trafo <- solve(trafo)
+        out <- homg2mat(trafo%*%mat2homg(x))
+    } else if (inherits(trafo,"tpsCoeff")) {
+        if (ncol(trafo$refmat) != ncol(x))
+            stop("TPS must be computed from control points of the same dimensionality")
+        if (inverse)
+            trafo <- computeTransform(trafo$refmat,trafo$tarmat,type="tps")
+        out <- .fx(trafo$refmat,x,trafo$coeff)
+    }
+    return(out)
+}
 
 mat3x3tomat4x4 <- function(x) {
     n <- ncol(x)
