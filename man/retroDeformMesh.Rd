@@ -5,7 +5,7 @@
 \title{symmetrize a triangular mesh}
 \usage{
 retroDeformMesh(mesh, mat, pairedLM, hmult = 5, alpha = 0.01, rot = TRUE,
-  lambda = 1e-08)
+  lambda = 1e-08, threads = 0)
 }
 \arguments{
 \item{mesh}{triangular mesh of class mesh3d}
@@ -14,13 +14,15 @@ retroDeformMesh(mesh, mat, pairedLM, hmult = 5, alpha = 0.01, rot = TRUE,
 
 \item{pairedLM}{2-column integer matrix with the 1st columns containing row indices of left side landmarks and 2nd column the right hand landmarks}
 
-\item{hmult}{damping factor for calculating local weights}
+\item{hmult}{damping factor for calculating local weights which is calculated as \code{humult} times the average squared distance between a landmark and its closest neighbor (on each side).}
 
 \item{alpha}{factor controlling spacing along x-axis}
 
 \item{rot}{logical: if TRUE the deformed landmarks are rotated back onto the original ones}
 
 \item{lambda}{control parameter passed to \code{\link{tps3d}}}
+
+\item{threads}{integer: number of threads to use for TPS deform}
 }
 \value{
 \item{mesh}{symmetrized mesh}

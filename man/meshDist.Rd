@@ -31,7 +31,7 @@ containing 3D coordinates.}
 pointing to a surface mesh (ply, obj or stl file)}
 
 \item{distvec}{vector: optional, a vector containing distances for each
-vertex of mesh1, if distvec != NULL, x will be ignored.}
+vertex/coordinate of \code{x}, if distvec != NULL, \code{mesh2} will be ignored.}
 
 \item{from}{numeric: minimum distance to be colorised; default is set to 0
 mm}
@@ -121,16 +121,16 @@ installed.
 
 data(nose)##load data
 ##warp a mesh onto another landmark configuration:
-warpnose.long <- tps3d(shortnose.mesh, shortnose.lm, longnose.lm)
+longnose.mesh <- tps3d(shortnose.mesh, shortnose.lm, longnose.lm,threads=1)
 \dontrun{
-mD <- meshDist(warpnose.long, shortnose.mesh)
+mD <- meshDist(longnose.mesh, shortnose.mesh)
 ##now change the color ramp
 render(mD,rampcolors = c("white","red"))
 }
 #use unsigned distances and a ramp from blue to red
 #color distances < 0.01 green:
 \dontrun{
-meshDist(warpnose.long, shortnose.mesh, rampcolors = c("blue", "red"),sign=FALSE, tol=0.5)
+meshDist(longnose.mesh, shortnose.mesh, rampcolors = c("blue", "red"),sign=FALSE, tol=0.5)
 }
 }
 \author{

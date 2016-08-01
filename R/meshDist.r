@@ -14,7 +14,7 @@
 #' @param mesh2 target mesh: either object of class "mesh3d" or a character
 #' pointing to a surface mesh (ply, obj or stl file)
 #' @param distvec vector: optional, a vector containing distances for each
-#' vertex of mesh1, if distvec != NULL, x will be ignored.
+#' vertex/coordinate of \code{x}, if distvec != NULL, \code{mesh2} will be ignored.
 #' @param from numeric: minimum distance to be colorised; default is set to 0
 #' mm
 #' @param to numeric: maximum distance to be colorised; default is set to the
@@ -73,16 +73,16 @@
 #' 
 #' data(nose)##load data
 #' ##warp a mesh onto another landmark configuration:
-#' warpnose.long <- tps3d(shortnose.mesh, shortnose.lm, longnose.lm)
+#' longnose.mesh <- tps3d(shortnose.mesh, shortnose.lm, longnose.lm,threads=1)
 #' \dontrun{
-#' mD <- meshDist(warpnose.long, shortnose.mesh)
+#' mD <- meshDist(longnose.mesh, shortnose.mesh)
 #' ##now change the color ramp
 #' render(mD,rampcolors = c("white","red"))
 #' }
 #' #use unsigned distances and a ramp from blue to red
 #' #color distances < 0.01 green:
 #' \dontrun{
-#' meshDist(warpnose.long, shortnose.mesh, rampcolors = c("blue", "red"),sign=FALSE, tol=0.5)
+#' meshDist(longnose.mesh, shortnose.mesh, rampcolors = c("blue", "red"),sign=FALSE, tol=0.5)
 #' }
 #' @rdname meshDist
 #' @export
@@ -129,9 +129,9 @@ meshDist.mesh3d <- function(x, mesh2=NULL, distvec=NULL, from=NULL, to=NULL, ste
     }  
     
     if (is.null(from)) {
-        mindist <- min(dists)
+        mindist <- min(dists,na.rm=TRUE)
         if (sign && mindist < 0 ) {
-            from <- quantile(dists,probs=(1-uprange)) 
+            from <- quantile(dists,probs=(1-uprange),na.rm = TRUE) 
             neg <- TRUE            
         } else {
             from <- 0
@@ -140,7 +140,7 @@ meshDist.mesh3d <- function(x, mesh2=NULL, distvec=NULL, from=NULL, to=NULL, ste
     if (from < 0)
         neg <- TRUE
     if (is.null(to))
-        to <- quantile(dists,probs=uprange)    
+        to <- quantile(dists,probs=uprange,na.rm = TRUE)    
     if(ceiling)
         to <- ceiling(to)
     
@@ -289,7 +289,8 @@ render.meshDist <- function(x,from=NULL,to=NULL,steps=NULL,ceiling=NULL,uprange=
             }             
         }
         if (is.null(scaleramp))
-            scaleramp <- x$scaleramp
+            scaleramp <- x$params$scaleramp
+       
         if (from < 0)
             neg <- TRUE
         if (is.null(to))
@@ -307,7 +308,6 @@ render.meshDist <- function(x,from=NULL,to=NULL,steps=NULL,ceiling=NULL,uprange=
             negseq <- length(which(colseq<0))
             poseq <- steps-negseq
             maxseq <- max(c(negseq,poseq))
-                                        
             if (scaleramp) {
                 ramp <- colorRampPalette(rampcolors)(maxseq*2)
                 ramp <- ramp[c(maxseq-negseq+1):(maxseq+poseq)]

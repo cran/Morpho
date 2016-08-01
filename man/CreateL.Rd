@@ -4,22 +4,26 @@
 \alias{CreateL}
 \title{Create Matrices necessary for Thin-Plate Spline}
 \usage{
-CreateL(matrix, lambda = 1e-08, output = c("L", "Linv", "Lsubk", "Lsubk3"))
+CreateL(matrix, lambda = 1e-08, output = c("K", "L", "Linv", "Lsubk",
+  "Lsubk3"), threads = 1)
 }
 \arguments{
 \item{matrix}{k x 3 or k x 2 matrix containing landmark coordinates.}
 
 \item{lambda}{numeric: regularization factor}
 
-\item{output}{character vector: select which matrices to create. Can be a vector containing any combination of the strings: \code{ "L","Linv","Lsubk", "Lsubk3"}.
+\item{output}{character vector: select which matrices to create. Can be a vector containing any combination of the strings: \code{"K", "L","Linv","Lsubk", "Lsubk3"}.}
+
+\item{threads}{threads to be used for parallel execution calculating K.
 sliding of semilandmarks.}
 }
 \value{
 depending on the choices in \code{output}:
+\item{L }{Matrix K as specified in Bookstein (1989)}
 \item{L }{Matrix L as specified in Bookstein (1989)}
 \item{Linv }{Inverse of matrix L as specified in Bookstein (1989)}
 \item{Lsubk }{uper left k x k submatrix of \code{Linv}}
-\item{Lsubk3 }{Matrix used for sliding in \code{\link{slider3d}} and \code{\link{relaxLM}}. Only available if \code{blockdiag = TRUE}}
+\item{Lsubk3 }{Matrix used for sliding in \code{\link{slider3d}} and \code{\link{relaxLM}}}.
 }
 \description{
 Create (Bending Engergy) Matrices necessary for Thin-Plate Spline, and
