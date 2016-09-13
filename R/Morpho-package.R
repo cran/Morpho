@@ -8,8 +8,8 @@
 #' \tabular{ll}{
 #' Package: \tab Morpho\cr
 #' Type: \tab Package\cr
-#' Version: \tab 2.4\cr
-#' Date: \tab 2016-07-29\cr
+#' Version: \tab 2.4.1.1\cr
+#' Date: \tab 2016-09-13\cr
 #' License: \tab GPL\cr
 #' LazyLoad: \tab yes\cr
 #' }
@@ -21,9 +21,9 @@
 #' 
 #' Maintainer: Stefan Schlager \email{stefan.schlager@@uniklinik-freiburg.de}
 #' @note
-#' The pdf-version of Morpho-help can be obtained from CRAN on \url{http://cran.r-project.org/package=Morpho}
+#' The pdf-version of Morpho-help can be obtained from CRAN on \url{https://cran.r-project.org/package=Morpho}
 #'
-#' For more advanced operations on triangular surface meshes, check out my package Rvcg: \url{http://cran.r-project.org/package=Rvcg} or the code repository on github \url{https://github.com/zarquon42b/Rvcg}
+#' For more advanced operations on triangular surface meshes, check out my package Rvcg: \url{https://cran.r-project.org/package=Rvcg} or the code repository on github \url{https://github.com/zarquon42b/Rvcg}
 #'
 #'
 #' 

@@ -1,4 +1,4 @@
-f161eac05d04e2553f36441c2858040d *DESCRIPTION
+2c68d6a481452e6fb53e672b23e0094a *DESCRIPTION
 d3e8666771fcafdb29c54faed85a6dbf *NAMESPACE
 6689ea05d095225a15eefaee6c93e9c7 *R/Atlas.r
 c63efd69d8740cdb7ee0d3135281630b *R/CAC.r
@@ -7,7 +7,7 @@ e761837e5cd3a8ce2a446a7ac51b1f19 *R/CVA.r
 4024ac4de8d5ecdf7c359729b17dde08 *R/CVAdists.r
 801bbd71515824153dc07c7832da918c *R/ComputeTransform.r
 91306877c911c5f7b32531f7f0ba2fa7 *R/CreateL.r
-048a34433ca107d7829400120cc92be8 *R/Morpho-package.R
+50d591871b23b21b6bf0f0b0b0fa561f *R/Morpho-package.R
 39a02f913a68bb39ad2db13ff6e25d58 *R/NNshapeReg.r
 4ed1ec393174824c8f59d75041ddc74d *R/PCdist.r
 423783cd203f5e49aca1f51a49f7fdac *R/PCmeaning.r
@@ -84,7 +84,7 @@ d96383c750b9190950fc8168368d12f0 *R/permudist.r
 3ab16897fcd89828d86519982266cd84 *R/permuvec.r
 5f15e62c087b9c11f7cfe02369745f9a *R/place.patch.r
 3fd02bbd7a467370debd8821196ff0b6 *R/plot.normals.r
-087cdab0c8db98240309fa08a021b805 *R/pls2B.r
+08d1c0290ed47f944e3991dc41234fa2 *R/pls2B.r
 87c6a2da0bed3db16e41ed021b211ea0 *R/ply2mesh.r
 520a187661e95133d362fda1c1fe3538 *R/points2plane.r
 86faf9907c7b2a98b9c6e96983e7cd8c *R/prcompfast.r
@@ -134,14 +134,14 @@ d6ddadee471658b3b7548eb901f1b4cb *R/write.pts.r
 7271b1651f1d04e9275b081d94abe383 *data/datalist
 f1679a97424796e7cc5bfb4710dbadba *data/nose.rda
 1ac749899ab60db2ae275710cf045ff0 *inst/COPYRIGHTS
-c1c91afb1346b257f7871b3679c92dc2 *inst/NEWS.Rd
+9683a72c7813d93136e6dac59f5ec53a *inst/NEWS.Rd
 e838659f0f9d4a43205103177f9364f9 *inst/extdata/SCP1.ply
 21f940dacf505e6ca5c06374fb983582 *inst/extdata/landmarks.pts
 6fc8726c76c86e3ff23da3eb73f8eed8 *man/CAC.Rd
 10597c89256fd9f246ed4260c0455f84 *man/CVA.Rd
 a17fb0a498293e935d86499e25383ea8 *man/CreateL.Rd
 da615b83b5adbc4bec278a422e519fcd *man/Morpho-deprecated.Rd
-ab249dc4f2989993736f8af91f865f9a *man/Morpho-package.Rd
+55cf8b23b92ac633b2771c63c3db4764 *man/Morpho-package.Rd
 8110fa1935e75a2495fb9a005bb10873 *man/NNshapeReg.Rd
 88b2d425de37e26fe242c0fe79ded11c *man/PCdist.Rd
 ac0965362125b53e8b4fc14db7170429 *man/ProcGPA.Rd
@@ -214,7 +214,7 @@ d0f0d120ea2a485680fbbe99a15be348 *man/permudist.Rd
 875cc854413e89ac88ffcd43d7827ac2 *man/plot.slider3d.Rd
 2ea9d8de6eeb39a1d480573161600137 *man/plotAtlas.Rd
 2a17e0ad0faac8928bfae836eb07c3f9 *man/plotNormals.Rd
-47eb4aca20c94062c7b9fe8f402ee4f1 *man/pls2B.Rd
+b42d239232179dbbd084f6322020d625 *man/pls2B.Rd
 27e8c1ab1773e40dba2d5a23d3bb1719 *man/plsCoVar.Rd
 dc432a7d67da8c13331825a3f39859c0 *man/ply2mesh.Rd
 1fff9b6a9fe8f2dbda6db15e4a3b308d *man/points2plane.Rd

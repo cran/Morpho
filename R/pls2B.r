@@ -31,7 +31,7 @@
 #' \item{Xscores }{PLS-scores of x}
 #' \item{Yscores }{PLS-scores of y}
 #' \item{CoVar }{Dataframe containing singular values, explained
-#' covariation, correlation coeffictient between PLS-scores and p-values}
+#' covariation, correlation coeffictient between PLS-scores and p-values for singular values obtained from permutation testing}
 #' \item{xlm}{linear model: \code{lm(Xscores ~ Yscores - 1)}}
 #' \item{ylm}{linear model: \code{lm(Yscores ~ Xscores - 1)}}
 #' @author Stefan Schlager
@@ -112,15 +112,14 @@ pls2B <- function(x, y, tol=1e-12, same.config=FALSE, rounds=0,useCor=FALSE, mc.
     svd.cova <- svd2B(xs,ys,scale = useCor)
 
     svs <- svd.cova$d
-    svs <- svs/sum(svs)
     svs <- svs[which(svs > tol)]
-    
-    covas <- svs*100
+    svs <- svs^2
+    covas <- (svs/sum(svs))*100
     l.covas <- length(covas)
     svd.cova$d <- svd.cova$d[1:l.covas]
     svd.cova$u <- svd.cova$u[,1:l.covas]
     svd.cova$v <- svd.cova$v[,1:l.covas]
-    Xscores <- x%*%svd.cova$u#pls scores of x
+    Xscores <- x%*%svd.cova$u #pls scores of x
     Yscores <- y%*%svd.cova$v #pls scores of y
     
     
@@ -164,7 +163,6 @@ pls2B <- function(x, y, tol=1e-12, same.config=FALSE, rounds=0,useCor=FALSE, mc.
                 p.value <- p.value/rounds
             else
                 p.value <- 1/rounds
-            gc()
             return(p.value)
         }
         
