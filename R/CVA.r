@@ -21,6 +21,7 @@
 #' @param cv logical: requests a Jackknife Crossvalidation.
 #' @param p.adjust.method method to adjust p-values for multiple comparisons see \code{\link{p.adjust.methods}} for options.
 #' @param robust character: determines covariance estimation methods, allowing for robust estimations using \code{MASS::cov.rob}
+#' @param prior vector assigning each group a prior probability.
 #' @param ... additional parameters passed to \code{MASS::cov.rob} for robust covariance and mean estimations
 #' @return
 #' \item{CV }{A matrix containing the Canonical Variates}
@@ -49,7 +50,7 @@
 #' 
 #' ## all examples are kindly provided by Marta Rufino
 #' 
-#' library(shapes)
+#' if (require(shapes)) {
 #' # perform procrustes fit on raw data
 #' alldat<-procSym(abind(gorf.dat,gorm.dat))
 #' # create factors
@@ -64,7 +65,7 @@
 #' points(cvvisNeg5,col=2)
 #' for (i in 1:nrow(cvvisNeg5))
 #'   lines(rbind(cvvis5[i,],cvvisNeg5[i,]))
-#' 
+#' }
 #' ### Morpho CVA
 #' data(iris)
 #' vari <- iris[,1:4]
@@ -77,9 +78,10 @@
 #' print(typprobs)
 #' ## visualize the CV scores by their groups estimated from (cross-validated)
 #' ## typicality probabilities:
-#' require(car)
+#' if (require(car)) {
 #' scatterplot(cva.1$CVscores[,1],cva.1$CVscores[,2],groups=typprobs$groupaffinCV,
 #'                   smooth=FALSE,reg.line=FALSE)
+#' }
 #' # plot the CVA
 #' plot(cva.1$CVscores, col=facto, pch=as.numeric(facto), typ="n",asp=1,
 #'    xlab=paste("1st canonical axis", paste(round(cva.1$Var[1,2],1),"%")),
@@ -96,20 +98,20 @@
 #'     }
 #' 
 #'   # add 80% ellipses
-#'   require(car)
+#'   if (require(car)) {
 #'   for(ii in 1:length(levels(facto))){
 #'     dataEllipse(cva.1$CVscores[facto==levels(facto)[ii],1],
 #'     cva.1$CVscores[facto==levels(facto)[ii],2], 
 #'                     add=TRUE,levels=.80, col=c(1:7)[ii])}
-#' 
+#'   }
 #'   # histogram per group
-#'   require(lattice)
+#'   if (require(lattice)) {
 #'   histogram(~cva.1$CVscores[,1]|facto,
 #'   layout=c(1,length(levels(facto))),
 #'           xlab=paste("1st canonical axis", paste(round(cva.1$Var[1,2],1),"%")))
 #'   histogram(~cva.1$CVscores[,2]|facto, layout=c(1,length(levels(facto))),
 #'           xlab=paste("2nd canonical axis", paste(round(cva.1$Var[2,2],1),"%")))
-#' 
+#'   } 
 #'   # plot Mahalahobis
 #'   dendroS=hclust(cva.1$Dist$GroupdistMaha)
 #'   dendroS$labels=levels(facto)
@@ -149,7 +151,7 @@
 #' deformGrid3d(cvvis5,cvvisNeg5,ngrid = 0)
 #' }
 #' @export
-CVA <- function (dataarray, groups, weighting = TRUE, tolinv = 1e-10,plot = TRUE, rounds = 0, cv = FALSE,p.adjust.method= "none",robust=c("classical", "mve", "mcd"),...) 
+CVA <- function (dataarray, groups, weighting = TRUE, tolinv = 1e-10,plot = TRUE, rounds = 0, cv = FALSE,p.adjust.method= "none",robust=c("classical", "mve", "mcd"),prior=NULL,...) 
 {
     groups <- factor(groups)
     lev <- levels(groups)
@@ -160,7 +162,13 @@ CVA <- function (dataarray, groups, weighting = TRUE, tolinv = 1e-10,plot = TRUE
         cv <- FALSE
         warning("group with one entry found - crossvalidation will be disabled.")
     }
-    prior <- gsizes/sum(gsizes)
+    if (is.null(prior))
+        prior <- gsizes/sum(gsizes)
+    else {
+        if (length(prior) != ng)
+            stop("you need to specify prior probabilities for all groups")
+        prior <- prior/sum(prior)
+    }
     N <- dataarray
     n3 <- FALSE
     if (length(dim(N)) == 3) {

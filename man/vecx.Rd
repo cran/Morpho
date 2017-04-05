@@ -26,13 +26,13 @@ one row per specimen or reverse this.
 }
 \examples{
 
-library(shapes)
+if (require(shapes)) {
 data <- vecx(gorf.dat) 
 #revert the procedure
 gdat.restored <- vecx(data,revert=TRUE,lmdim=2)
 range(gdat.restored-gorf.dat)
 }
+}
 \author{
 Stefan Schlager
 }
-

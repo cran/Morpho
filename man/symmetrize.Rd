@@ -7,7 +7,7 @@
 symmetrize(x, pairedLM)
 }
 \arguments{
-\item{x}{k x m matrix with rows containing landmark coordinates}
+\item{x}{k x m matrix or k x m x n array, with rows containing landmark coordinates}
 
 \item{pairedLM}{A X x 2 matrix containing the indices (rownumbers) of the
 paired LM. E.g. the left column contains the lefthand landmarks, while the
@@ -39,4 +39,3 @@ Klingenberg CP, Barluenga M, and Meyer A. 2002. Shape analysis of symmetric
 structures: quantifying variation among individuals and asymmetry. Evolution
 56(10):1909-1920.
 }
-

@@ -6,10 +6,10 @@
 \usage{
 procSym(dataarray, scale = TRUE, reflect = TRUE, CSinit = TRUE,
   orp = TRUE, tol = 1e-05, pairedLM = NULL, sizeshape = FALSE,
-  use.lm = NULL, center.part = FALSE, pcAlign = TRUE,
-  distfun = c("angle", "riemann"), SMvector = NULL, outlines = NULL,
-  deselect = FALSE, recursive = TRUE, iterations = 0, initproc = FALSE,
-  bending = TRUE, stepsize = 1)
+  use.lm = NULL, center.part = FALSE, weights = NULL,
+  centerweight = FALSE, pcAlign = TRUE, distfun = c("angle", "riemann"),
+  SMvector = NULL, outlines = NULL, deselect = FALSE, recursive = TRUE,
+  iterations = 0, initproc = FALSE, bending = TRUE, stepsize = 1)
 }
 \arguments{
 \item{dataarray}{Input k x m x n real array, where k is the number of
@@ -42,6 +42,12 @@ for Procrustes registration.}
 defined by use.lm will be centered according to the centroid of the complete
 configuration. Otherwise orp will be set to FALSE to avoid erroneous
 projection into tangent space.}
+
+\item{weights}{numeric vector: assign per landmark weights.}
+
+\item{centerweight}{logical: if TRUE, the landmark configuration is scaled
+according to weights during the rotation process, instead of being scaled to
+the Centroid size.}
 
 \item{pcAlign}{logical: if TRUE, the shapes are aligned by the principal axis of the first specimen}
 
@@ -159,16 +165,14 @@ pcaplot3d(symproc, sym=FALSE)
 
 ## visualze distribution of symmetric PCscores population
 pop <- name2factor(boneLM, which=3)
-require(car)
+if (require(car)) {
 spm(~symproc$PCscore_sym[,1:5], groups=pop)
 ## visualze distribution of asymmetric PCscores population
 spm(~symproc$PCscore_asym[,1:5], groups=pop)
 }
-
-
 }
-\author{
-Stefan Schlager
+
+
 }
 \references{
 Dryden IL, and Mardia KV. 1998. Statistical shape analysis.
@@ -185,4 +189,6 @@ E. Slice, pp. 73-98. New York: Kluwer Academic/Plenum Publishers.
 \seealso{
 \code{\link{slider3d}}
 }
-
+\author{
+Stefan Schlager
+}

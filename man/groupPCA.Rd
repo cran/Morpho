@@ -57,16 +57,16 @@ dimensional between group structure of a high dimensional problem.
 }
 \examples{
 
-require(car)
 data(iris)
 vari <- iris[,1:4]
 facto <- iris[,5]
 pca.1 <-groupPCA(vari,groups=facto,rounds=100,mc.cores=1)
 
 ### plot scores
+if (require(car)) {
 scatterplotMatrix(pca.1$Scores,groups=facto, ellipse=TRUE,
         by.groups=TRUE,var.labels=c("PC1","PC2","PC3"))
-
+}
 ## example with shape data
 data(boneData)
 proc <- procSym(boneLM)
@@ -92,9 +92,6 @@ spheres3d(grandmean, radius=0.005)
 
 
 }
-\author{
-Stefan Schlager
-}
 \references{
 Mitteroecker P, Bookstein F 2011. Linear Discrimination,
 Ordination, and the Visualization of Selection Gradients in Modern
@@ -106,4 +103,6 @@ of Pure and Applied Mathematics 19, 359-366.
 \seealso{
 \code{\link{CVA}}
 }
-
+\author{
+Stefan Schlager
+}

@@ -40,7 +40,7 @@
 #' to study covariation in shape. Systematic Biology 49:740-753.
 #' @examples
 #' 
-#' library(shapes)
+#' if (require(shapes)) {
 #' ### very arbitrary test:
 #' ### check if first 4 landmarks covaries with the second 4
 #' proc <- procSym(gorf.dat)
@@ -74,6 +74,7 @@
 #' plsEffects2 <- plsCoVar(pls1,i=2)
 #' deformGrid2d(plsEffects2$x[,,1],plsEffects2$x[,,2])##show on x
 #' deformGrid2d(plsEffects2$y[,,1],plsEffects2$y[,,2],add=TRUE,pch=19)##show on y
+#' }
 #' @export
 pls2B <- function(x, y, tol=1e-12, same.config=FALSE, rounds=0,useCor=FALSE, mc.cores=parallel::detectCores()) {
     
@@ -116,9 +117,9 @@ pls2B <- function(x, y, tol=1e-12, same.config=FALSE, rounds=0,useCor=FALSE, mc.
     svs <- svs^2
     covas <- (svs/sum(svs))*100
     l.covas <- length(covas)
-    svd.cova$d <- svd.cova$d[1:l.covas]
-    svd.cova$u <- svd.cova$u[,1:l.covas]
-    svd.cova$v <- svd.cova$v[,1:l.covas]
+    svd.cova$d <- svd.cova$d[1:l.covas,drop=FALSE]
+    svd.cova$u <- svd.cova$u[,1:l.covas,drop=FALSE]
+    svd.cova$v <- svd.cova$v[,1:l.covas,drop=FALSE]
     Xscores <- x%*%svd.cova$u #pls scores of x
     Yscores <- y%*%svd.cova$v #pls scores of y
     
@@ -218,7 +219,7 @@ getPLSfromScores <- function(pls,x,y) {
         else if (is.matrix(x))
             xl <- ncol(x)
 
-        out <- t(svdpls$u[,1:xl]%*%t(x))
+        out <- t(svdpls$u[,1:xl,drop=FALSE]%*%t(x))
         out <- sweep(out,2,-pls$xcenter)
         if (length(dim(pls$x)) == 3) {
             if (is.matrix(x) && nrow(x) > 1) {
@@ -272,6 +273,7 @@ predictPLSfromScores <- function(pls,x,y) {
     
     svdpls <- pls$svd
     if (missing(y)) {
+        pls$ylm$coefficients <- as.matrix(pls$ylm$coefficients)
         if (is.vector(x) || length(x) == 1) {
             xl <- length(x)
             x <- t(x)
@@ -279,11 +281,7 @@ predictPLSfromScores <- function(pls,x,y) {
         else if (is.matrix(x))
             xl <- ncol(x)
 
-        if (xl == 1)
-            yest <- t(as.matrix(pls$ylm$coefficients[1:xl,]*x))
-        else
-            yest <- t(t(pls$ylm$coefficients[1:xl,])%*%t(x))
-        
+        yest <- t(t(pls$ylm$coefficients[1:xl,,drop=FALSE])%*%t(x))
         out <- t(svdpls$v%*%t(yest))
         out <- sweep(out,2,-pls$ycenter)
         if (length(dim(pls$y)) == 3) {
@@ -298,16 +296,14 @@ predictPLSfromScores <- function(pls,x,y) {
     }
     
     if (missing(x)) {
+        pls$xlm$coefficients <- as.matrix(pls$xlm$coefficients)
         if (is.vector(y) || length(y) == 1) {
             xl <- length(y)
             y <- t(y)
         }
         else if (is.matrix(y))
             xl <- ncol(y)
-        if (xl == 1)
-            xest <- t(as.matrix(pls$xlm$coefficients[1:xl,]*y))
-        else
-            xest <- t(t(pls$xlm$coefficients[c(1:xl),])%*%t(y))
+        xest <- t(t(pls$xlm$coefficients[c(1:xl),,drop=FALSE])%*%t(y))
         out <- t(svdpls$u%*%t(xest))
         
         out <- sweep(out,2,-pls$xcenter)
@@ -353,7 +349,7 @@ getPLSscores <- function(pls,x,y) {
             if (is.matrix(x))
                 x <- as.vector(x)
             x <- x-pls$xcenter
-            out <- t(x)%*%pls$svd$u
+            out <- t(t(pls$svd$u)%*%x)
         }
         
     }
@@ -369,7 +365,7 @@ getPLSscores <- function(pls,x,y) {
             if (is.matrix(y))
                 y <- as.vector(y)
             y <- y-pls$ycenter
-            out <- t(y)%*%pls$svd$v
+            out <- t(t(pls$svd$v)%*%y)
             
         }
     }
@@ -452,11 +448,11 @@ svd2B <- function(x,y,scale=F,u=T,v=T) {
     svdutu <- svd(utu)
     svdutu$d <- svdutu$d/(nrow(x) -1 )
     if (u)
-        svdutu$u <- (svdx$v)%*%svdutu$u
+        svdutu$u <- as.matrix((svdx$v)%*%svdutu$u)
     else
         svdutu$u <- NULL
     if (v)
-        svdutu$v <- (svdy$v)%*%svdutu$v
+        svdutu$v <- as.matrix((svdy$v)%*%svdutu$v)
     else
         svdutu$v <- NULL
     return(svdutu)

@@ -4,7 +4,7 @@
 \alias{fixLMtps}
 \title{estimate missing landmarks}
 \usage{
-fixLMtps(data, comp = 3, weight = TRUE)
+fixLMtps(data, comp = 3, weight = TRUE, weightfun = NULL)
 }
 \arguments{
 \item{data}{array containing landmark data}
@@ -14,6 +14,8 @@ taken to calculate an initial estimate.}
 
 \item{weight}{logical: requests the calculation of an estimate based on the
 procrustes distance. Otherwise the sample's consensus is used as reference.}
+
+\item{weightfun}{custom function that operates on a vector of distances (see examples) and generates weights accordingly.}
 }
 \value{
 \item{out }{array containing all data, including fixed configurations - same order as input}
@@ -39,9 +41,7 @@ landmark is quite far off the rest of the landmarks (due to the radial basis
 function used in the Thin-plate spline interpolation.
 }
 \examples{
-
-require(rgl)
-require(shapes)
+if (require(shapes)) {
 data <- gorf.dat
 ### set first landmark of first specimen to NA
 data[1,,1] <- NA
@@ -49,7 +49,7 @@ repair <- fixLMtps(data,comp=5)
 ### view difference between estimated and actual landmark
 plot(repair$out[,,1],asp=1,pch=21,cex=0.7,col=2)#estimated landmark
 points(gorf.dat[,,1],col=3,pch=20)#actual landmark
-
+}
 ## 3D-example:
 data(boneData)
 data <- boneLM
@@ -60,9 +60,14 @@ repair <- fixLMtps(data,comp=10)
 \dontrun{
 deformGrid3d(repair$out[,,1], boneLM[,,1],ngrid=0)
 }
+
+## Now use a gaussian kernel to compute the weights and use all other configs
+gaussWeight <- function(r,sigma=0.05) {
+   sigma <- 2*sigma^2
+   return(exp(-r^2/ sigma))
 }
-\author{
-Stefan Schlager
+repair <- fixLMtps(data,comp=79,weightfun=gaussWeight)
+
 }
 \references{
 Bookstein FL. 1989. Principal Warps: Thin-plate splines and the
@@ -72,4 +77,6 @@ machine intelligence 11.
 \seealso{
 \code{\link{proc.weight}}, \code{\link{tps3d}}
 }
-
+\author{
+Stefan Schlager
+}

@@ -30,13 +30,12 @@ original space
 }
 \examples{
 
-library(shapes)
+if (require(shapes)) {
 a <- procSym(gorf.dat)
 PCdist(a$PCs, a$PCscores, x = 2)
-
+}
 
 }
 \author{
 Stefan Schlager
 }
-

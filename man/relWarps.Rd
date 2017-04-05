@@ -5,7 +5,7 @@
 \title{calculate relative Warp analysis}
 \usage{
 relWarps(data, scale = TRUE, CSinit = TRUE, alpha = 1, tol = 1e-10,
-  orp = TRUE, pcAlign = TRUE, computeBasis = TRUE)
+  orp = TRUE, pcAlign = TRUE, computeBasis = TRUE, noalign = FALSE)
 }
 \arguments{
 \item{data}{Input k x m x n real array, where k is the number of points, m
@@ -29,6 +29,8 @@ zero}
 \item{pcAlign}{logical: if TRUE, the shapes are aligned by the principal axis of the first specimen}
 
 \item{computeBasis}{logical: whether to compute the basis of the resulting vector space (takes a lot of memory and time for configurations with > 1000 coordinates.}
+
+\item{noalign}{logical: if TRUE, data is assumed to be already aligned and alignment and orthogonal projection are skipped.}
 }
 \value{
 \item{bescores }{relative warp scores (PC-scores if \code{alpha = 0})}
@@ -51,11 +53,12 @@ data(boneData)
 pop <- name2factor(boneLM,which=3)
 rW <- relWarps(boneLM, alpha = -1)
 \dontrun{
-require(car)
+if (require(car)) {
 # plot first 5 relative warps scores grouped by population
 spm(rW$bescores[,1:5],group=pop)
 # plot uniform component scores grouped by population
 spm(rW$uniscores[,1:5],group=pop)
+}
 ##plot non-affine variance associated with each relative warp
 barplot(rW$Var[,2], xlab="relative Warps")
 ## visualize first relative warp +-3 sd of the scores
@@ -63,24 +66,23 @@ rw1 <- showPC(as.matrix(c(-3,3)*sd(rW$bescores[,1])),rW$bePCs[,1,drop=FALSE],rW$
 deformGrid3d(rw1[,,1],rw1[,,2],ngrid=5)
 
 ## 2D example:
-require(shapes)
+if (require(shapes)) {
 data <- bindArr(gorf.dat, gorm.dat, along=3)
 sex <- factor(c(rep("fem", dim(gorf.dat)[3]), rep("male",dim(gorm.dat)[3])))
 rW <- relWarps(data, alpha = -1)
+if (require(car)) {
 # plot first 3 relative warps scores grouped by population
 spm(rW$bescores[,1:3],group=sex)
 # plot uniform component scores grouped by population
 spm(rW$uniscores[,1:2],group=sex)
+}
 ##plot non-affine variance associated with each relative warp
 barplot(rW$Var[,2], xlab="relative Warps")
 ## visualize first relative warp +-3 sd of the scores
 rw1 <- showPC(as.matrix(c(-3,3)*sd(rW$bescores[,1])),rW$bePCs[,1,drop=FALSE],rW$mshape)
 deformGrid2d(rw1[,,1],rw1[,,2],ngrid=10)
-}
+}}
 
-}
-\author{
-Stefan Schlager
 }
 \references{
 Bookstein FL 1989. Principal Warps: Thin-plate splines and the
@@ -93,4 +95,6 @@ data. Geometry and biology. Cambridge Univ. Press, Cambridge.
 Rohlf FJ, Bookstein FL 2003. Computing the Uniform Component of Shape
 Variation. Systematic Biology 52:66-69.
 }
-
+\author{
+Stefan Schlager
+}

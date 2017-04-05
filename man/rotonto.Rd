@@ -64,18 +64,15 @@ all lines containing NA, or NaN are ignored in computing the transformation.
 }
 \examples{
 
-library(shapes)
+if (require(shapes)) {
 lims <- c(min(gorf.dat[,,1:2]),max(gorf.dat[,,1:2]))
 rot <- rotonto(gorf.dat[,,1],gorf.dat[,,2]) ### rotate the second onto the first config
 plot(rot$yrot,pch=19,xlim=lims,ylim=lims) ## view result
 points(gorf.dat [,,2],pch=19,col=2) ## view original config
 rev1 <- rotreverse(rot$yrot,rot)
 points(rev1,cex=2) ### show inversion by larger circles around original configuration
-
-
 }
-\author{
-Stefan Schlager
+
 }
 \references{
 Lissitz, R. W., Schoenemann, P. H., & Lingoes, J. C. (1976). A
@@ -85,4 +82,6 @@ in agreement with the loss function. Psychometrika, 41,547-550.
 \seealso{
 \code{\link{rotmesh.onto}}
 }
-
+\author{
+Stefan Schlager
+}

@@ -9,10 +9,11 @@
 #' 
 #' @examples
 #' 
-#' require(rgl)
+#'
 #' data(nose)
 #' bary <- barycenter(shortnose.mesh)
 #' \dontrun{
+#' require(rgl)
 #' ##visualize mesh
 #' wire3d(shortnose.mesh)
 #' # visualize barycenters
@@ -34,6 +35,6 @@ barycenter <- function(mesh)
     } else
         stop("mesh has no triangular faces")
     nit <- dim(it)[2]
-    out <- .Call("barycenter",vb,it)
+    out <- .Call("barycenterCpp",vb,it)
     return(out)
   }

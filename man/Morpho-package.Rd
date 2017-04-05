@@ -3,8 +3,8 @@
 \docType{package}
 \encoding{utf8}
 \name{Morpho-package}
-\alias{Morpho}
 \alias{Morpho-package}
+\alias{Morpho}
 \title{A toolbox providing methods for data-acquisition, visualisation and
 statistical methods related to Geometric Morphometrics and shape analysis}
 \description{
@@ -16,8 +16,8 @@ and semi-automated placement of surface landmarks.
 \tabular{ll}{
 Package: \tab Morpho\cr
 Type: \tab Package\cr
-Version: \tab 2.4.1.1\cr
-Date: \tab 2016-09-13\cr
+Version: \tab 2.5\cr
+Date: \tab 2017-03-24\cr
 License: \tab GPL\cr
 LazyLoad: \tab yes\cr
 }
@@ -27,16 +27,15 @@ The pdf-version of Morpho-help can be obtained from CRAN on \url{https://cran.r-
 
 For more advanced operations on triangular surface meshes, check out my package Rvcg: \url{https://cran.r-project.org/package=Rvcg} or the code repository on github \url{https://github.com/zarquon42b/Rvcg}
 }
-\author{
-Stefan Schlager \email{stefan.schlager@uniklinik-freiburg.de}
-
-Maintainer: Stefan Schlager \email{stefan.schlager@uniklinik-freiburg.de}
-}
 \references{
 Schlager S. 2013. Soft-tissue reconstruction of the human nose:
 population differences and sexual dimorphism. PhD thesis,
 \enc{Universitätsbibliothek}{Universitaetsbibliothek} Freiburg. URL:
 \url{http://www.freidok.uni-freiburg.de/volltexte/9181/}.
 }
-\keyword{package}
+\author{
+Stefan Schlager \email{zarquon42@gmail.com}
 
+Maintainer: Stefan Schlager \email{zarquon42@gmail.com}
+}
+\keyword{package}

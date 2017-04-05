@@ -15,6 +15,7 @@
 #' taken to calculate an initial estimate.
 #' @param weight logical: requests the calculation of an estimate based on the
 #' procrustes distance. Otherwise the sample's consensus is used as reference.
+#' @param weightfun custom function that operates on a vector of distances (see examples) and generates weights accordingly. 
 #' @return
 #' \item{out }{array containing all data, including fixed configurations - same order as input}
 #' \item{mshape }{meanshape - calculated from complete datasets}
@@ -30,9 +31,7 @@
 #' machine intelligence 11.
 #' 
 #' @examples
-#' 
-#' require(rgl)
-#' require(shapes)
+#' if (require(shapes)) {
 #' data <- gorf.dat
 #' ### set first landmark of first specimen to NA
 #' data[1,,1] <- NA
@@ -40,7 +39,7 @@
 #' ### view difference between estimated and actual landmark
 #' plot(repair$out[,,1],asp=1,pch=21,cex=0.7,col=2)#estimated landmark
 #' points(gorf.dat[,,1],col=3,pch=20)#actual landmark
-#' 
+#' }
 #' ## 3D-example:
 #' data(boneData)
 #' data <- boneLM
@@ -51,8 +50,16 @@
 #' \dontrun{
 #' deformGrid3d(repair$out[,,1], boneLM[,,1],ngrid=0)
 #' }
+#'
+#' ## Now use a gaussian kernel to compute the weights and use all other configs
+#' gaussWeight <- function(r,sigma=0.05) {
+#'    sigma <- 2*sigma^2
+#'    return(exp(-r^2/ sigma))
+#' }
+#' repair <- fixLMtps(data,comp=79,weightfun=gaussWeight)
+#' 
 #' @export
-fixLMtps <- function(data,comp=3,weight=TRUE)
+fixLMtps <- function(data,comp=3,weight=TRUE,weightfun=NULL)
 {
   n <- dim(data)[3]
   k <- dim(data)[1]
@@ -114,7 +121,7 @@ fixLMtps <- function(data,comp=3,weight=TRUE)
           rotmiss <- rotonto(mean0[-miss,],data[-miss,,check[i]],scale=TRUE)$yrot
           allrot <- bindArr(rotmiss,proc.c$rotated[-miss,,], along=3)
           ## calculate weights according to procrustes distance ###			
-          wcalc <- proc.weight(allrot,comp,1,report=FALSE)
+          wcalc <- proc.weight(allrot,comp,1,report=FALSE,weightfun=weightfun)
           lms <- proc.c$rotated[,,wcalc$data$nr-1]
           if (is.matrix(lms))
               lms <- array(lms,dim=c(dim(lms),1))

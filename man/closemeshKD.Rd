@@ -47,16 +47,12 @@ these faces.
 }
 \examples{
 
-require(rgl)
 data(nose)
 out <- closemeshKD(longnose.lm,shortnose.mesh,sign=TRUE)
 ### show distances - they are very small because
 ###longnose.lm is scaled to unit centroid size.
 hist(out$quality)
 
-}
-\author{
-Stefan Schlager
 }
 \references{
 Baerentzen, Jakob Andreas. & Aanaes, H., 2002. Generating Signed
@@ -70,4 +66,6 @@ Signal Processing Society 3:128-138.
 \seealso{
 \code{\link{ply2mesh}}
 }
-
+\author{
+Stefan Schlager
+}

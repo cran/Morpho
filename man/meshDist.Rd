@@ -2,8 +2,8 @@
 % Please edit documentation in R/meshDist.r, R/meshDistMatrix.r
 \name{meshDist}
 \alias{meshDist}
-\alias{meshDist.matrix}
 \alias{meshDist.mesh3d}
+\alias{meshDist.matrix}
 \title{calculates and visualises distances between surface meshes or 3D coordinates and a surface mesh.}
 \usage{
 meshDist(x, ...)
@@ -13,19 +13,23 @@ meshDist(x, ...)
   rampcolors = colorRamps::blue2green2red(steps - 1), NAcol = "white",
   file = "default", imagedim = "100x800", uprange = 1, ray = FALSE,
   raytol = 50, raystrict = FALSE, save = FALSE, plot = TRUE,
-  sign = TRUE, tol = NULL, displace = FALSE, shade = TRUE,
-  method = c("vcglib", "morpho"), add = FALSE, scaleramp = TRUE, ...)
+  sign = TRUE, tol = NULL, tolcol = "green", displace = FALSE,
+  shade = TRUE, method = c("vcglib", "morpho"), add = FALSE,
+  scaleramp = TRUE, ...)
 
 \method{meshDist}{matrix}(x, mesh2 = NULL, distvec = NULL, from = NULL,
   to = NULL, steps = 20, ceiling = FALSE,
   rampcolors = colorRamps::blue2green2red(steps - 1), NAcol = "white",
-  uprange = 1, plot = TRUE, sign = TRUE, tol = NULL, type = c("s",
-  "p"), radius = NULL, displace = FALSE, add = FALSE, scaleramp = FALSE,
-  ...)
+  uprange = 1, plot = TRUE, sign = TRUE, tol = NULL, tolcol = "green",
+  type = c("s", "p"), radius = NULL, displace = FALSE, add = FALSE,
+  scaleramp = FALSE, ...)
 }
 \arguments{
 \item{x}{reference mesh; object of class "mesh3d" or a n x 3 matrix
 containing 3D coordinates.}
+
+\item{\dots}{additional arguments passed to \code{\link{shade3d}}. See
+\code{\link{rgl.material}} for details.}
 
 \item{mesh2}{target mesh: either object of class "mesh3d" or a character
 pointing to a surface mesh (ply, obj or stl file)}
@@ -73,6 +77,8 @@ specified or distvec contains signed distances.}
 \item{tol}{numeric: threshold to color distances within this threshold
 green.}
 
+\item{tolcol}{a custom color to color vertices below a threshold defined by \code{tol}. Default is green.}
+
 \item{displace}{logical: if TRUE, displacement vectors between original and
 closest points are drawn colored according to the distance.}
 
@@ -92,9 +98,6 @@ dots.}
 
 \item{radius}{determines size of spheres; if not specified, optimal radius
 size will be estimated by centroid size of the configuration.}
-
-\item{\dots}{additional arguments passed to \code{\link{shade3d}}. See
-\code{\link{rgl.material}} for details.}
 }
 \value{
 Returns an object of class "meshDist" if the input is a surface mesh
@@ -133,9 +136,6 @@ render(mD,rampcolors = c("white","red"))
 meshDist(longnose.mesh, shortnose.mesh, rampcolors = c("blue", "red"),sign=FALSE, tol=0.5)
 }
 }
-\author{
-Stefan Schlager
-}
 \references{
 Detection of inside/outside uses the algorithm proposed in:
 
@@ -146,4 +146,6 @@ Fields From Triangle Meshes. Informatics and Mathematical Modelling, .
 \code{\link{render.meshDist}}, , \code{\link{export.meshDist}},
 \code{\link{shade3d}}
 }
-
+\author{
+Stefan Schlager
+}

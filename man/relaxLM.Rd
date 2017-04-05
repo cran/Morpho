@@ -16,7 +16,8 @@ relaxLM(lm, ...)
 
 \method{relaxLM}{mesh3d}(lm, reference, tol = 1e-05, deselect = FALSE,
   inc.check = TRUE, iterations = 0, fixRepro = TRUE, missing = NULL,
-  bending = FALSE, stepsize = ifelse(bending, 1, 0.5), use.lm = NULL, ...)
+  bending = FALSE, stepsize = ifelse(bending, 1, 0.5), use.lm = NULL,
+  silent = FALSE, ...)
 }
 \arguments{
 \item{lm}{k x 3 or k x 2 matrix containing landmark data to be slidden - or a triangular mesh of class "mesh3d". See details}
@@ -139,9 +140,6 @@ mediumnose.mesh <- tps3d(shortnose.mesh,shortnose.lm, (shortnose.lm+longnose.lm)
 relaxMesh <- relaxLM(shortnose.mesh,mediumnose.mesh,iterations=2,bending=FALSE,stepsize=0.05)
 }
 }
-\author{
-Stefan Schlager
-}
 \references{
 Gunz, P., P. Mitteroecker, and F. L. Bookstein. 2005.
 Semilandmarks in Three Dimensions, in Modern Morphometrics in Physical
@@ -151,4 +149,6 @@ Academic/Plenum Publishers.
 \seealso{
 \code{\link{slider3d}}
 }
-
+\author{
+Stefan Schlager
+}

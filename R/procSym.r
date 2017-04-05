@@ -33,6 +33,10 @@
 #' defined by use.lm will be centered according to the centroid of the complete
 #' configuration. Otherwise orp will be set to FALSE to avoid erroneous
 #' projection into tangent space.
+#' @param weights numeric vector: assign per landmark weights.
+#' @param centerweight logical: if TRUE, the landmark configuration is scaled
+#' according to weights during the rotation process, instead of being scaled to
+#' the Centroid size.
 #' @param pcAlign logical: if TRUE, the shapes are aligned by the principal axis of the first specimen
 #' @param distfun character: "riemann" requests a Riemannian distance for
 #' calculating distances to mean, while "angle" uses an approximation by
@@ -136,15 +140,16 @@
 #' 
 #' ## visualze distribution of symmetric PCscores population
 #' pop <- name2factor(boneLM, which=3)
-#' require(car)
+#' if (require(car)) {
 #' spm(~symproc$PCscore_sym[,1:5], groups=pop)
 #' ## visualze distribution of asymmetric PCscores population
 #' spm(~symproc$PCscore_asym[,1:5], groups=pop)
 #' }
+#' }
 #' 
 #' 
 #' @export
-procSym <- function(dataarray, scale=TRUE, reflect=TRUE, CSinit=TRUE,  orp=TRUE, tol=1e-05, pairedLM=NULL, sizeshape=FALSE, use.lm=NULL, center.part=FALSE, pcAlign=TRUE, distfun=c("angle", "riemann"), SMvector=NULL, outlines=NULL, deselect=FALSE, recursive=TRUE,iterations=0, initproc=FALSE, bending=TRUE,stepsize=1)
+procSym <- function(dataarray, scale=TRUE, reflect=TRUE, CSinit=TRUE,  orp=TRUE, tol=1e-05, pairedLM=NULL, sizeshape=FALSE, use.lm=NULL, center.part=FALSE,weights=NULL,centerweight=FALSE, pcAlign=TRUE, distfun=c("angle", "riemann"), SMvector=NULL, outlines=NULL, deselect=FALSE, recursive=TRUE,iterations=0, initproc=FALSE, bending=TRUE,stepsize=1)
 {
     t0 <- Sys.time()     
     A <- dataarray
@@ -170,7 +175,7 @@ procSym <- function(dataarray, scale=TRUE, reflect=TRUE, CSinit=TRUE,  orp=TRUE,
     if (!is.null(SMvector)) { # includes sliding of Semilandmarks
         if (is.null(outlines))
             stop("please specify outlines")
-        dataslide <- Semislide(A, SMvector=SMvector,outlines=outlines,tol=tol,deselect=deselect,recursive=recursive,iterations=iterations,pairedLM=pairedLM,initproc=initproc, bending=bending,stepsize=stepsize)
+        dataslide <- slider2d(A, SMvector=SMvector,outlines=outlines,tol=tol,deselect=deselect,recursive=recursive,iterations=iterations,pairedLM=pairedLM,initproc=initproc, bending=bending,stepsize=stepsize)
         A <- dataslide
         for (i in 1:n)
             CS <- apply(A,3,cSize)
@@ -194,19 +199,17 @@ procSym <- function(dataarray, scale=TRUE, reflect=TRUE, CSinit=TRUE,  orp=TRUE,
     cat("performing Procrustes Fit ")
     
     if (!is.null(use.lm)) { ### only use subset for rotation and scale
-        proc <- ProcGPA(Aall[use.lm,,],scale=scale,CSinit=CSinit,reflection=reflect,pcAlign=pcAlign,silent=FALSE)
+        proc <- ProcGPA(Aall[use.lm,,],scale=scale,CSinit=CSinit,reflection=reflect,pcAlign=pcAlign,silent=FALSE,centerweight=centerweight,weights=weights)
         tmp <- Aall
         for (i in 1:dim(Aall)[3]) {
             tmp[,,i] <- rotonmat(Aall[,,i],Aall[use.lm,,i],proc$rotated[,,i],scale=TRUE, reflection=reflect)
             if (center.part)
                 tmp[,,i] <- scale(tmp[,,i], scale=FALSE) ## center shapes
-            else
-                orp <- FALSE
         }
         proc$rotated <- tmp
         proc$mshape <- arrMean3(tmp) ##calc new meanshape
     } else
-        proc <- ProcGPA(Aall,scale=scale,CSinit=CSinit, reflection=reflect,pcAlign=pcAlign,silent=FALSE)
+        proc <- ProcGPA(Aall,scale=scale,CSinit=CSinit, reflection=reflect,pcAlign=pcAlign,silent=FALSE,centerweight=centerweight,weights=weights)
     
     procrot <- proc$rotated
     dimna <- dimnames(dataarray)
@@ -225,7 +228,7 @@ procSym <- function(dataarray, scale=TRUE, reflect=TRUE, CSinit=TRUE,  orp=TRUE,
 ###### project into tangent space ######
 ###test###        
     
-    if (orp==TRUE && CSinit==TRUE)
+    if (orp)
         procrot <- orp(proc$rotated, mshape=proc$mshape)
     
     orpdata <- procrot
@@ -347,7 +350,7 @@ procSym <- function(dataarray, scale=TRUE, reflect=TRUE, CSinit=TRUE,  orp=TRUE,
         
         class(out) <- "nosymproc"
     }
-    attributes(out) <- append(attributes(out),list(CSinit=CSinit,scale=scale,orp=orp,reflect=reflect))
+    attributes(out) <- append(attributes(out),list(CSinit=CSinit,scale=scale,orp=orp,reflect=reflect,centerweight=centerweight,weights=weights))
     return(out)
     
 }
@@ -369,4 +372,46 @@ print.symproc <- function(x,...) {
     cat("\n Variance Table of Asymmetric Component\n")
     print(as.data.frame(x$AsymVar),row.names=FALSE)
 }
-    
+
+#' align new data to an existing Procrustes registration
+#'
+#' align new data to an existing Procrustes registration
+#'
+#' @param x result of a \code{procSym} call
+#' @param newdata matrix or array of with landmarks corresponding to the data aligned in x
+#' @param orp logical: allows to skip orthogonal projection, even if it was used in the \code{procSym} call.
+#' @return an array with data aligned to the mean shape in x (and projected into tangent space)
+#' @note this will never yield the same result as a pooled Procrustes analysis because the sample mean is iteratively updated and new data would change the mean.
+#' @examples
+#' require(Morpho)
+#' data(boneData)
+#' # run procSym on entire data set
+#' proc <- procSym(boneLM)
+#' # this is the training data
+#' array1 <- boneLM[,,1:60]
+#' newdata <- boneLM[,,61:80]
+#' proc1 <- procSym(array1)
+#' newalign <- align2procSym(proc1,newdata)
+#' ## compare alignment for one specimen to Proc. registration using all data
+#' \dontrun{
+#' deformGrid3d(newalign[,,1],proc$orpdata[,,61])
+#' }
+#' @export
+align2procSym <- function(x,newdata,orp=TRUE) {
+    if (!inherits(x,c( "nosymproc","symproc")))
+        stop("x must be of class symproc or nosymproc")
+    if (is.matrix(newdata))
+        newdata <- array(newdata,dim=c(dim(newdata),1))
+    if (length(dim(newdata)) != 3)
+        stop("newdata must be a 3D array")
+    n <- dim(newdata)[3]
+    atts <- attributes(x)
+    newdatarot <- newdata
+    for (i in 1:n)
+        newdatarot[,,i] <- rotonto(x$mshape,newdata[,,i],scale=atts$scale,reflection=atts$reflect,centerweight=atts$centerweight,weights=atts$weights)$yrot
+    if (atts$orp && orp)
+        orpdata <- orp(newdatarot,x$mshape)
+     if (dim(orpdata)[3] == 1)
+         orpdata <- orpdata[,,1]
+    return(orpdata)
+}

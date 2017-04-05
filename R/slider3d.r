@@ -264,9 +264,13 @@ slider3d <- function(dat.array,SMvector,outlines=NULL,surp=NULL,sur.path=NULL,su
     ## parallel function in case meshlist != NULL
     parfunmeshlist <- function(i,data) {
         if (!is.list(data))
-            out <- projRead(data[,,i],meshlist[[i]])
+            tmpdata <- data[,,i]
         else
-            out <- projRead(data[[i]],meshlist[[i]])
+            tmpdata <- data[[i]]
+        out <- projRead(tmpdata,meshlist[[i]])
+        if (!is.null(missingList))
+            if(length(missingList[[i]]))
+                out$vb[1:3,missingList[[i]]] <- t(tmpdata[missingList[[i]],])
         return(out)
     }
     parfunmeshfile <- function(i, data) {

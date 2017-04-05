@@ -6,7 +6,7 @@
 \usage{
 CVA(dataarray, groups, weighting = TRUE, tolinv = 1e-10, plot = TRUE,
   rounds = 0, cv = FALSE, p.adjust.method = "none",
-  robust = c("classical", "mve", "mcd"), ...)
+  robust = c("classical", "mve", "mcd"), prior = NULL, ...)
 }
 \arguments{
 \item{dataarray}{Either a k x m x n real array, where k is the number of
@@ -36,6 +36,8 @@ If rounds = 0, no test is performed.}
 
 \item{robust}{character: determines covariance estimation methods, allowing for robust estimations using \code{MASS::cov.rob}}
 
+\item{prior}{vector assigning each group a prior probability.}
+
 \item{...}{additional parameters passed to \code{MASS::cov.rob} for robust covariance and mean estimations}
 }
 \value{
@@ -61,7 +63,7 @@ performs a Canonical Variate Analysis.
 
 ## all examples are kindly provided by Marta Rufino
 
-library(shapes)
+if (require(shapes)) {
 # perform procrustes fit on raw data
 alldat<-procSym(abind(gorf.dat,gorm.dat))
 # create factors
@@ -76,7 +78,7 @@ plot(cvvis5,asp=1)
 points(cvvisNeg5,col=2)
 for (i in 1:nrow(cvvisNeg5))
   lines(rbind(cvvis5[i,],cvvisNeg5[i,]))
-
+}
 ### Morpho CVA
 data(iris)
 vari <- iris[,1:4]
@@ -89,9 +91,10 @@ typprobs <- typprobClass(cva.1$CVscores,groups=facto)
 print(typprobs)
 ## visualize the CV scores by their groups estimated from (cross-validated)
 ## typicality probabilities:
-require(car)
+if (require(car)) {
 scatterplot(cva.1$CVscores[,1],cva.1$CVscores[,2],groups=typprobs$groupaffinCV,
                   smooth=FALSE,reg.line=FALSE)
+}
 # plot the CVA
 plot(cva.1$CVscores, col=facto, pch=as.numeric(facto), typ="n",asp=1,
    xlab=paste("1st canonical axis", paste(round(cva.1$Var[1,2],1),"\%")),
@@ -108,20 +111,20 @@ plot(cva.1$CVscores, col=facto, pch=as.numeric(facto), typ="n",asp=1,
     }
 
   # add 80\% ellipses
-  require(car)
+  if (require(car)) {
   for(ii in 1:length(levels(facto))){
     dataEllipse(cva.1$CVscores[facto==levels(facto)[ii],1],
     cva.1$CVscores[facto==levels(facto)[ii],2], 
                     add=TRUE,levels=.80, col=c(1:7)[ii])}
-
+  }
   # histogram per group
-  require(lattice)
+  if (require(lattice)) {
   histogram(~cva.1$CVscores[,1]|facto,
   layout=c(1,length(levels(facto))),
           xlab=paste("1st canonical axis", paste(round(cva.1$Var[1,2],1),"\%")))
   histogram(~cva.1$CVscores[,2]|facto, layout=c(1,length(levels(facto))),
           xlab=paste("2nd canonical axis", paste(round(cva.1$Var[2,2],1),"\%")))
-
+  } 
   # plot Mahalahobis
   dendroS=hclust(cva.1$Dist$GroupdistMaha)
   dendroS$labels=levels(facto)
@@ -161,9 +164,6 @@ cvvisNeg5 <- showPC(cvvisNeg5,proc$PCs[,1:5],proc$mshape)
 deformGrid3d(cvvis5,cvvisNeg5,ngrid = 0)
 }
 }
-\author{
-Stefan Schlager
-}
 \references{
 Cambell, N. A. & Atchley, W. R.. 1981 The Geometry of Canonical
 Variate Analysis: Syst. Zool., 30(3), 268-280.
@@ -175,4 +175,6 @@ Systematic Biology 54, 678-688.
 \seealso{
 \code{\link{groupPCA}}
 }
-
+\author{
+Stefan Schlager
+}

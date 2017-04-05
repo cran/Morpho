@@ -66,7 +66,7 @@
 #' }
 #' 
 #' @export
-checkLM <- function(dat.array, path=NULL, prefix="", suffix=".ply", col="white", pt.size=NULL, alpha=0.7, begin=1, render=c("w","s"), point=c("s","p"), add=FALSE, Rdata=FALSE, atlas=NULL, text.lm=FALSE)
+checkLM <- function(dat.array, path=NULL, prefix="", suffix=".ply", col="white", pt.size=NULL, alpha=1, begin=1, render=c("w","s"), point=c("s","p"), add=FALSE, Rdata=FALSE, atlas=NULL, text.lm=FALSE)
     {
         k <- NULL
         marked <- NULL
@@ -107,9 +107,10 @@ checkLM <- function(dat.array, path=NULL, prefix="", suffix=".ply", col="white",
         }
         i <- begin
         if (render=="w") {
+            back <- front <- "lines"
             rend <- wire3d
         } else {
-            rend <- shade3d
+            back <- front <- "filled"
         }
         if (!add || rgl.cur()==0)
             open3d()
@@ -139,7 +140,7 @@ checkLM <- function(dat.array, path=NULL, prefix="", suffix=".ply", col="white",
                         tmpmesh <- get(input)
                     }
                     
-                    outid <- c(outid,rend(tmpmesh,col=col,alpha=alpha))
+                    outid <- c(outid,shade3d(tmpmesh,col=col,alpha=alpha,back=back,front=front))
                     rm(tmpmesh)
                     if (Rdata)
                         rm(list=input)
