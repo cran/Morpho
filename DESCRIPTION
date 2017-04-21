@@ -2,8 +2,8 @@ Package: Morpho
 Type: Package
 Title: Calculations and Visualisations Related to Geometric
         Morphometrics
-Version: 2.5
-Date: 2017-03-24
+Version: 2.5.1
+Date: 2017-04-19
 Authors@R: c(
     person("Stefan", "Schlager",, "zarquon42@gmail.com", c("aut", "cre", "cph")),
     person("Gregory", "Jefferis",,, c("ctb"))
@@ -26,9 +26,9 @@ URL: https://github.com/zarquon42b/Morpho
 Encoding: UTF-8
 RoxygenNote: 6.0.1
 NeedsCompilation: yes
-Packaged: 2017-04-05 12:43:50 UTC; schlager
+Packaged: 2017-04-20 16:04:30 UTC; schlager
 Author: Stefan Schlager [aut, cre, cph],
   Gregory Jefferis [ctb]
 Maintainer: Stefan Schlager <zarquon42@gmail.com>
 Repository: CRAN
-Date/Publication: 2017-04-05 13:05:53 UTC
+Date/Publication: 2017-04-21 05:52:53 UTC

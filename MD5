@@ -1,4 +1,4 @@
-9cb20ef14c9dec9f223a14b2fe256c66 *DESCRIPTION
+f8bb1adc8694567659969c67d22f2da6 *DESCRIPTION
 4095e8503f199fd168ba3ff8f75ed236 *NAMESPACE
 edecb965f7f1d69b98120934cb23247e *R/Atlas.r
 c63efd69d8740cdb7ee0d3135281630b *R/CAC.r
@@ -7,7 +7,7 @@ c63efd69d8740cdb7ee0d3135281630b *R/CAC.r
 4024ac4de8d5ecdf7c359729b17dde08 *R/CVAdists.r
 51ed45b76b3b4f26ef4fbc804eb1797f *R/ComputeTransform.r
 84f2e1cc1be6e803e445ff5f4567a4a6 *R/CreateL.r
-2c8591012b36115807db3dd88808bc1a *R/Morpho-package.R
+d71c220a690d49dce360ea0be3dc1383 *R/Morpho-package.R
 1a9a0e8780346ded9ad8b09010775064 *R/NNshapeReg.r
 e3d704db3f67e1c2529ee68fbe5f3984 *R/PCdist.r
 423783cd203f5e49aca1f51a49f7fdac *R/PCmeaning.r
@@ -91,7 +91,7 @@ d96383c750b9190950fc8168368d12f0 *R/permudist.r
 a44b0bba8e2b6834b264157e988f71e1 *R/predictShape.lm.r
 465b83e461c94b4c84895cc8b09123fe *R/proc.weight.r
 1b874d88b11ccfdea1fdf8284f2e5c82 *R/procAOVsym.r
-7e654700a7920cb062a64f2bf682ee37 *R/procSym.r
+76065ea8409210acc07fb69eddb1a6e4 *R/procSym.r
 fc632b2cc0ad471840d9d10406f419e3 *R/projRead.r
 24afd52771bcafee3f151f58e30f87e0 *R/qqmat.r
 169350d7e0d976230201426db1badda5 *R/quad2trimesh.r
@@ -136,14 +136,14 @@ b03ebc758da042a05c427647b60b227c *R/write.pts.r
 f1679a97424796e7cc5bfb4710dbadba *data/nose.rda
 db17f2c29701d7264f7365e9cd1b702d *inst/CITATION
 1ac749899ab60db2ae275710cf045ff0 *inst/COPYRIGHTS
-4226e4356c928bbec3f2ab99cfc8074c *inst/NEWS.Rd
+bda3f6703b3032caf8a72c95b0806c8e *inst/NEWS.Rd
 e838659f0f9d4a43205103177f9364f9 *inst/extdata/SCP1.ply
 21f940dacf505e6ca5c06374fb983582 *inst/extdata/landmarks.pts
 cf520a483a599a579910781afa631391 *man/CAC.Rd
 c0782845c7f0de9a8f9f130e8b1acc78 *man/CVA.Rd
 e036c74ad909a0eeeef94b8313fd7d90 *man/CreateL.Rd
 95df5c58a1bd07d8068cf60ddf55f5e9 *man/Morpho-deprecated.Rd
-4bcdf344e9bec54030b637f7e15d52c6 *man/Morpho-package.Rd
+9be906a785a5f799e34c1be22205b155 *man/Morpho-package.Rd
 bb54d423f29b93c0dc1cda226247f625 *man/NNshapeReg.Rd
 fa033e962173ea4cf0181f2f352697a2 *man/PCdist.Rd
 ea12df404287beb24b601ce1b0da0fb0 *man/ProcGPA.Rd
