@@ -117,8 +117,8 @@ placePatch <- function(atlas, dat.array, path, prefix=NULL, fileext=".ply", ray=
         }
         if (is.null(tol) && !is.null(inflate))
             tol <- inflate
-        if (mc.cores > 1)
-            silent <- TRUE
+       # if (mc.cores > 1)
+      #      silent <- TRUE
         
         patched <- place.patch(dat.array, path, atlas.mesh =atlas$mesh, atlas.lm = atlas$landmarks, patch =atlas$patch, curves=atlas$patchCurves, prefix=prefix, tol=tol, ray=ray, outlines=atlas$corrCurves, inflate=inflate, relax.patch=relax.patch, rhotol=rhotol, fileext=fileext, SMvector = keep.fix, silent=silent,mc.cores=mc.cores)
         return(patched)
@@ -133,7 +133,6 @@ place.patch <- function(dat.array,path,atlas.mesh,atlas.lm,patch,curves=NULL,pre
             registerDoParallel(cores = mc.cores)
         } else
             registerDoSEQ()
-        
         k <- dim(dat.array)[1]
         deselect=TRUE
         fix <- which(c(1:k) %in% SMvector)
@@ -269,7 +268,7 @@ place.patch <- function(dat.array,path,atlas.mesh,atlas.lm,patch,curves=NULL,pre
             return(out)
         }
 
-        out <- foreach(i=1:n, .inorder=TRUE,.errorhandling="pass",.export=c("calcGamma",".calcTang_U_s"),.packages=c("Morpho","Rvcg")) %dopar% parfun(i)
+        out <- foreach(i=1:n, .inorder=TRUE,.errorhandling="pass",.export=c("calcGamma",".calcTang_U_s","outlines","SMvector","curves","relax.patch"),.packages=c("Morpho","Rvcg")) %dopar% parfun(i)
 
         
         if (!usematrix && n > 1) {

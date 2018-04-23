@@ -8,8 +8,8 @@
 #' \tabular{ll}{
 #' Package: \tab Morpho\cr
 #' Type: \tab Package\cr
-#' Version: \tab 2.5.1\cr
-#' Date: \tab 2017-04-19\cr
+#' Version: \tab 2.6\cr
+#' Date: \tab 2018-04-19\cr
 #' License: \tab GPL\cr
 #' LazyLoad: \tab yes\cr
 #' }
@@ -37,7 +37,7 @@
 #' @useDynLib Morpho, .registration = TRUE 
 #' @import doParallel graphics grDevices methods stats utils
 #' @importFrom foreach foreach '%dopar%' '%do%'
-#' @importFrom Matrix sparseMatrix diag crossprod solve as.matrix t cBind
+#' @importFrom Matrix sparseMatrix diag crossprod solve as.matrix t
 #' @importFrom parallel mclapply detectCores
 #' @importFrom rgl lines3d open3d points3d rgl.bg rgl.bringtotop rgl.clear rgl.close  rgl.cur rgl.pop rgl.snapshot shade3d spheres3d text3d translate3d wire3d
 #' @importFrom Rcpp evalCpp

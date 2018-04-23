@@ -71,7 +71,7 @@ ProcGPA <- function(dat.array,tol=1e-5,scale=TRUE,CSinit=FALSE,silent=TRUE,weigh
     }
     mshape <- x[,,1]
     if (centerweight && !is.null(weights)) {
-        mcent <- apply(mshape*weights,2,sum)           
+        mcent <- apply(mshape,2, weighted.mean,w=weights)           
         mshape <- scale(mshape,scale=F,center=mcent)
     }
 ### align mean by principal axes ###	
@@ -142,7 +142,7 @@ ProcGPA <- function(dat.array,tol=1e-5,scale=TRUE,CSinit=FALSE,silent=TRUE,weigh
     }
     t1 <- Sys.time()
     if (!silent)
-        cat(paste("in... ",format(t1-t0)[[1]],"\n"))
+        message(paste("in... ",format(t1-t0)[[1]],"\n"))
     
     return(list(rotated=x,mshape=mshape))
 }	
