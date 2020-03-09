@@ -20,10 +20,10 @@ warpmovie2d(x, y, n, col = "green", palindrome = FALSE,
   imagedim = "800x800", par = list(xaxt = "n", yaxt = "n", bty = "n"),
   ...)
 
-\method{warpmovie3d}{mesh3d}(x, y, n, col = "green",
-  palindrome = FALSE, folder = NULL, movie = "warpmovie",
-  add = FALSE, close = TRUE, countbegin = 0, ask = TRUE,
-  radius = NULL, xland = NULL, yland = NULL, lmcol = "black", ...)
+\method{warpmovie3d}{mesh3d}(x, y, n, col = NULL, palindrome = FALSE,
+  folder = NULL, movie = "warpmovie", add = FALSE, close = TRUE,
+  countbegin = 0, ask = TRUE, radius = NULL, xland = NULL,
+  yland = NULL, lmcol = "black", ...)
 }
 \arguments{
 \item{x}{mesh to start with (object of class mesh3d)}
@@ -117,6 +117,8 @@ if (require(shapes)) {
 bb <- procSym(gorf.dat)
 ### morph superimposed first specimen onto sample mean
 warpmovie2d(bb$rotated[,,1],bb$mshape,n=20,links=c(1,5,4:2,8:6,1),imagedim="600x400")
+## remove files
+unlink("warpmovie00*")
 }
 }
 \seealso{
