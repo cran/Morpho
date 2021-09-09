@@ -8,21 +8,60 @@
 \usage{
 meshDist(x, ...)
 
-\method{meshDist}{mesh3d}(x, mesh2 = NULL, distvec = NULL,
-  from = NULL, to = NULL, steps = 20, ceiling = FALSE,
-  rampcolors = colorRamps::blue2green2red(steps - 1), NAcol = "white",
-  file = "default", imagedim = "100x800", uprange = 1, ray = FALSE,
-  raytol = 50, raystrict = FALSE, save = FALSE, plot = TRUE,
-  sign = TRUE, tol = NULL, tolcol = "green", displace = FALSE,
-  shade = TRUE, method = c("vcglib", "morpho"), add = FALSE,
-  scaleramp = TRUE, ...)
+\method{meshDist}{mesh3d}(
+  x,
+  mesh2 = NULL,
+  distvec = NULL,
+  from = NULL,
+  to = NULL,
+  steps = 20,
+  ceiling = FALSE,
+  rampcolors = colorRamps::blue2green2red(steps - 1),
+  NAcol = "white",
+  file = "default",
+  imagedim = "100x800",
+  uprange = 1,
+  ray = FALSE,
+  raytol = 50,
+  raystrict = FALSE,
+  save = FALSE,
+  plot = TRUE,
+  sign = TRUE,
+  tol = NULL,
+  tolcol = "green",
+  displace = FALSE,
+  shade = TRUE,
+  method = c("vcglib", "morpho"),
+  add = FALSE,
+  scaleramp = TRUE,
+  threads = 1,
+  titleplot = "Distance in mm",
+  ...
+)
 
-\method{meshDist}{matrix}(x, mesh2 = NULL, distvec = NULL,
-  from = NULL, to = NULL, steps = 20, ceiling = FALSE,
-  rampcolors = colorRamps::blue2green2red(steps - 1), NAcol = "white",
-  uprange = 1, plot = TRUE, sign = TRUE, tol = NULL,
-  tolcol = "green", type = c("s", "p"), radius = NULL,
-  displace = FALSE, add = FALSE, scaleramp = FALSE, ...)
+\method{meshDist}{matrix}(
+  x,
+  mesh2 = NULL,
+  distvec = NULL,
+  from = NULL,
+  to = NULL,
+  steps = 20,
+  ceiling = FALSE,
+  rampcolors = colorRamps::blue2green2red(steps - 1),
+  NAcol = "white",
+  uprange = 1,
+  plot = TRUE,
+  sign = TRUE,
+  tol = NULL,
+  tolcol = "green",
+  type = c("s", "p"),
+  radius = NULL,
+  displace = FALSE,
+  add = FALSE,
+  scaleramp = FALSE,
+  titleplot = "Distance in mm",
+  ...
+)
 }
 \arguments{
 \item{x}{reference mesh; object of class "mesh3d" or a n x 3 matrix
@@ -93,6 +132,10 @@ based on a kd-tree search for closest triangles.}
 
 \item{scaleramp}{logical: if TRUE, the colorramp will be symmetrical for signed distances: spanning from \code{-max(from,to)} to \code{max(from,to)}.}
 
+\item{threads}{integer: number of threads to use. 0 = let system decide.}
+
+\item{titleplot}{character: axis description of heatmap.}
+
 \item{type}{character: "s" shows coordinates as spheres, while "p" shows 3D
 dots.}
 
@@ -115,10 +158,6 @@ and a surface mesh.
 \details{
 calculates the distances from a mesh or a set of 3D coordinates to another
 at each vertex; either closest point or along the normals
-
-this function needs the command line tools from the Auxiliaries section in
-\url{http://sourceforge.net/projects/morpho-rpackage/files/Auxiliaries}
-installed.
 }
 \examples{
 

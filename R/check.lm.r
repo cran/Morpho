@@ -36,9 +36,6 @@
 #' @param text.lm logical: number landmarks. Only applicable when
 #' \code{atlas=NULL}.
 #' @return returns an invisible vector of indices of marked specimen.
-#' @note if \code{Rdata=FALSE}, the additional command line tools need to be
-#' installed
-#' (\url{http://sourceforge.net/projects/morpho-rpackage/files/Auxiliaries/})
 #' @seealso \code{\link{placePatch}, \link{createAtlas}, \link{plotAtlas},
 #' \link{file2mesh}}
 #' 
@@ -62,7 +59,7 @@
 #' atlas <- createAtlas(shortnose.mesh, landmarks =
 #'            shortnose.lm[c(1:5,20:21),],
 #' patch=shortnose.lm[-c(1:5,20:21),])
-#' \dontrun{
+#' if (interactive()){
 #' checkLM(data, path="./",Rdata=TRUE, suffix="", atlas=atlas)
 #' }
 #' ## remove data from disk

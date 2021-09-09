@@ -4,10 +4,26 @@
 \alias{deformGrid2d}
 \title{visualise differences between two superimposed sets of 2D landmarks}
 \usage{
-deformGrid2d(matrix, tarmatrix, ngrid = 0, lwd = 1, show = c(1:2),
-  lines = TRUE, lcol = 1, col1 = 2, col2 = 3, pcaxis = FALSE,
-  add = FALSE, wireframe = NULL, margin = 0.2, gridcol = "grey",
-  cex1 = 1, cex2 = 1, ...)
+deformGrid2d(
+  matrix,
+  tarmatrix,
+  ngrid = 0,
+  lwd = 1,
+  show = c(1:2),
+  lines = TRUE,
+  lcol = 1,
+  lty = 2,
+  col1 = 2,
+  col2 = 3,
+  pcaxis = FALSE,
+  add = FALSE,
+  wireframe = NULL,
+  margin = 0.2,
+  gridcol = "grey",
+  cex1 = 1,
+  cex2 = 1,
+  ...
+)
 }
 \arguments{
 \item{matrix}{reference matrix containing 2D landmark coordinates or mesh of class "mesh3d"}
@@ -25,6 +41,8 @@ plotted. Options are combinations of 1,2 and 3.}
 \item{lines}{logical: if TRUE, lines between landmarks will be plotted.}
 
 \item{lcol}{color of lines}
+
+\item{lty}{line type}
 
 \item{col1}{color of "matrix"}
 

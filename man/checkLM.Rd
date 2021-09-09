@@ -5,10 +5,23 @@
 \title{Visually browse through a sample rendering its landmarks and corresponding
 surfaces.}
 \usage{
-checkLM(dat.array, path = NULL, prefix = "", suffix = ".ply",
-  col = "white", pt.size = NULL, alpha = 1, begin = 1,
-  render = c("w", "s"), point = c("s", "p"), add = FALSE,
-  meshlist = NULL, Rdata = FALSE, atlas = NULL, text.lm = FALSE)
+checkLM(
+  dat.array,
+  path = NULL,
+  prefix = "",
+  suffix = ".ply",
+  col = "white",
+  pt.size = NULL,
+  alpha = 1,
+  begin = 1,
+  render = c("w", "s"),
+  point = c("s", "p"),
+  add = FALSE,
+  meshlist = NULL,
+  Rdata = FALSE,
+  atlas = NULL,
+  text.lm = FALSE
+)
 }
 \arguments{
 \item{dat.array}{array or list containing landmark coordinates.}
@@ -63,11 +76,6 @@ Browse through a sample rendering its landmarks and corresponding surfaces.
 This is handy e.g. to check if the landmark projection using placePatch was
 successful, and to mark specific specimen.
 }
-\note{
-if \code{Rdata=FALSE}, the additional command line tools need to be
-installed
-(\url{http://sourceforge.net/projects/morpho-rpackage/files/Auxiliaries/})
-}
 \examples{
 
 data(nose)
@@ -88,7 +96,7 @@ checkLM(data, path="./",Rdata=TRUE, suffix="")
 atlas <- createAtlas(shortnose.mesh, landmarks =
            shortnose.lm[c(1:5,20:21),],
 patch=shortnose.lm[-c(1:5,20:21),])
-\dontrun{
+if (interactive()){
 checkLM(data, path="./",Rdata=TRUE, suffix="", atlas=atlas)
 }
 ## remove data from disk

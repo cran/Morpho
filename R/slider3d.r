@@ -62,6 +62,7 @@
 #' \code{fixRepro=FALSE}
 #' @param missingList a list of length samplesize containing integer vectors of row indices specifying missing landmars for each specimen. For specimens without missing landmarks enter \code{numeric(0)}.
 #' @param use.lm indices specifying a subset of (semi-)landmarks to be used in the rotation step - only used if \code{bending=FALSE}.
+#' @param smoothnormals logical: if TRUE, tangent planes will be computed from locally smoothed normals
 #' @param silent logical: if TRUE, console output is suppressed.
 #' @return
 #' \item{dataslide }{array containing slidden Landmarks in the original
@@ -164,7 +165,7 @@
 #' }
 #' 
 #' @export
-slider3d <- function(dat.array,SMvector,outlines=NULL,surp=NULL,sur.path=NULL,sur.name=NULL, meshlist=NULL, ignore=NULL,sur.type="ply",tol=1e-05,deselect=FALSE,inc.check=TRUE,recursive=TRUE,iterations=0,initproc=TRUE,fullGPA=FALSE,pairedLM=0,bending=TRUE,stepsize=ifelse(bending,1,0.5),mc.cores = parallel::detectCores(), fixRepro=TRUE,missingList=NULL,use.lm=NULL,silent=FALSE)
+slider3d <- function(dat.array,SMvector,outlines=NULL,surp=NULL,sur.path=NULL,sur.name=NULL, meshlist=NULL, ignore=NULL,sur.type="ply",tol=1e-05,deselect=FALSE,inc.check=TRUE,recursive=TRUE,iterations=0,initproc=TRUE,fullGPA=FALSE,pairedLM=0,bending=TRUE,stepsize=ifelse(bending,1,0.5),mc.cores = parallel::detectCores(), fixRepro=TRUE,missingList=NULL,use.lm=NULL,smoothnormals=FALSE,silent=FALSE)
 {
     if (.Platform$OS.type == "windows" && mc.cores > 1) {
         cl <- makeCluster(mc.cores)            
@@ -287,7 +288,7 @@ slider3d <- function(dat.array,SMvector,outlines=NULL,surp=NULL,sur.path=NULL,su
             tmpdata <- data[,,i]
         else
             tmpdata <- data[[i]]
-        out <- projRead(tmpdata,meshlist[[i]])
+        out <- projRead(tmpdata,meshlist[[i]],smooth=smoothnormals)
         if (!is.null(missingList))
             if(length(missingList[[i]]))
                 out$vb[1:3,missingList[[i]]] <- t(tmpdata[missingList[[i]],])
@@ -299,7 +300,7 @@ slider3d <- function(dat.array,SMvector,outlines=NULL,surp=NULL,sur.path=NULL,su
         else
             tmpdata <- data[[i]]
         
-        out <- projRead(tmpdata,sur.name[i])
+        out <- projRead(tmpdata,sur.name[i],smooth=smoothnormals)
         if (!is.null(missingList))
             if(length(missingList[[i]]))
                 out$vb[1:3,missingList[[i]]] <- t(tmpdata[missingList[[i]],])

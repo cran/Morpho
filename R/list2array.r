@@ -5,8 +5,8 @@
 #' @return returns an array concatenating all matrices
 #' @export
 list2array <- function(x) {
-    xclass <- sapply(x,class)
-    classchk <- prod(xclass == "matrix")
+    xclass <- sapply(x,inherits,"matrix")
+    classchk <- prod(xclass)
     if (!classchk)
         stop("all list entries must be matrices")
     xdim <- sapply(x,dim)
@@ -23,4 +23,21 @@ list2array <- function(x) {
     for (i in 1:length(x))
         arr[,,i] <- x[[i]]
     return(arr)
+}
+
+#' reverts list2array, converting an array to a list of matrices 
+#'
+#' reverts list2array, converting an array to a list of matrices 
+#' @param x array 
+#' @return returns a list containing the matrices
+#' @export
+array2list <- function(x) {
+    outlist <- list()
+    for (i in 1:dim(x)[3]) {
+        outlist[[i]] <- x[,,i]
+    }
+    names(outlist) <- dimnames(x)[[3]]
+    return(outlist)
+        
+    
 }
