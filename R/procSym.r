@@ -97,6 +97,7 @@
 #' \item{dataslide }{array containing slidden Landmarks in the original
 #' space - not yet processed by a Procrustes analysis. Only available if a
 #' sliding process was requested}
+#' \item{meanlogCS}{mean log-transformed centroid size}
 #' @note For processing of surface landmarks or including the reprojection of
 #' slid landmarks back onto 3D-surface representations, the usage of
 #' \code{\link{slider3d}} is recommended.
@@ -161,6 +162,7 @@ procSym <- function(dataarray, scale=TRUE, reflect=TRUE, CSinit=TRUE,  orp=TRUE,
     Mir[1] <- -1
     Mir <- diag(Mir)
     dataslide <- NULL
+    meanlogCS <- NULL
     CS <- NULL
     if (substr(distfun[1], 1L, 1L) == "r"){
         distfun <- kendalldist
@@ -254,15 +256,16 @@ procSym <- function(dataarray, scale=TRUE, reflect=TRUE, CSinit=TRUE,  orp=TRUE,
     Symtan <- Symarray
     Symtan <- sweep(Symtan, 1:2, meanshape)
     tan <- vecx(Symtan)
-    if (sizeshape) { 
-        CSlog <- log(CS)-mean(log(CS))
+    if (sizeshape) {
+        meanlogCS <- mean(log(CS))
+        CSlog <- log(CS) - meanlogCS
         tan <- cbind(CSlog,tan)
     }
     dimnames(Symarray) <- dimnames(dataarray)
     
 ###### PCA Sym Component ###### 
     princ <- try(prcompfast(tan),silent=TRUE)
-    if (class(princ) == "try-error")
+    if (inherits(princ, "try-error"))
         princ <- eigenPCA(tan)
 
     values <- 0
@@ -297,7 +300,7 @@ procSym <- function(dataarray, scale=TRUE, reflect=TRUE, CSinit=TRUE,  orp=TRUE,
         asymmean <- arrMean3(Asymm)
         asymtan <- vecx(sweep(Asymm, 1:2, asymmean))[1:n,]
         pcasym <- try(prcompfast(asymtan),silent=TRUE)
-        if (class(pcasym) == "try-error")
+        if (inherits(pcasym, "try-error"))
             pcasym <- eigenPCA(asymtan)
         
         eigva <- pcasym$sdev^2
@@ -342,7 +345,7 @@ procSym <- function(dataarray, scale=TRUE, reflect=TRUE, CSinit=TRUE,  orp=TRUE,
             AsymVar=AsymVar,orpdata=orpdata[,,1:n],
             orpmir=orpdata[,,(n+1):(2*n)],
             rmsrho=rmsrho,rho=rho,dataslide= dataslide,
-            pairedLM=pairedLM
+            pairedLM=pairedLM,meanlogCS=meanlogCS
             ))
         class(out) <- "symproc"
     } else {
@@ -350,12 +353,12 @@ procSym <- function(dataarray, scale=TRUE, reflect=TRUE, CSinit=TRUE,  orp=TRUE,
             size=CS,rotated=proc$rotated,mshape=meanshape,tan=tan,PCs=PCs,
             PCscores=PCscore_sym,eigenvalues=values,Variance=SymVar,
             orpdata=orpdata[,,1:n] ,rmsrho=proc$rmsrho,rho=rho,
-            dataslide= dataslide
+            dataslide= dataslide,meanlogCS=meanlogCS
             ))
         
         class(out) <- "nosymproc"
     }
-    attributes(out) <- append(attributes(out),list(CSinit=CSinit,scale=scale,orp=orp,reflect=reflect,centerweight=centerweight,weights=weights,sizeshape=sizeshape))
+    attributes(out) <- append(attributes(out),list(CSinit=CSinit,scale=scale,orp=orp,reflect=reflect,centerweight=centerweight,weights=weights,sizeshape=sizeshape,use.lm=use.lm,center.part=center.part))
     return(out)
     
 }
@@ -417,9 +420,16 @@ align2procSym <- function(x,newdata,orp=TRUE) {
         for (i in 1:n)
         newdata[,,i] <- newdata[,,i]/mysize[i]
     }
-    
-    for (i in 1:n)        
-        newdatarot[,,i] <- rotonto(x$mshape,newdata[,,i],scale=atts$scale,reflection=atts$reflect,centerweight=atts$centerweight,weights=atts$weights)$yrot
+    if (is.null(atts$use.lm))
+        for (i in 1:n)         
+            newdatarot[,,i] <- rotonto(x$mshape,newdata[,,i],scale=atts$scale,reflection=atts$reflect,centerweight=atts$centerweight,weights=atts$weights)$yrot
+    else {
+        newdatarot[,,i] <- rotonmat(newdata[,,i],newdata[atts$use.lm,,i],x$mshape[atts$use.lm,],scale=atts$scale,reflection=atts$reflect,centerweight=atts$centerweight,weights=atts$weights)
+        if (atts$center.part)
+            newdatarot[,,i] <- scale(newdatarot[,,i], scale=FALSE)
+        else
+            orp=FALSE
+    }
     
     if (atts$orp && orp)
         orpdata <- orp(newdatarot,x$mshape)

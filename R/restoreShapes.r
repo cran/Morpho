@@ -10,6 +10,9 @@
 #' associated with 'scores'.
 #' @param mshape matrix containing the meanshape's landmarks (used to center
 #' the data by the PCA)
+#' @param sizeshape logical: if TRUE, it is assumed that the data is the output of \code{procSym} run with \code{sizeshape=TRUE}.
+#' @param origsize logical: if \code{sizeshape = TRUE}, this will apply the scaling to the original size from the corresponding entry from the PC basis matrix.
+#' @param meanlogCS numeric: provide the average log Centroid Size of the original sample (see examples below). Only needed if \code{sizeshape = TRUE} and \code{origsize = TRUE}
 #' @return returns matrix or array containing landmarks
 #' @author Stefan Schlager
 #' @seealso \code{\link{prcomp}}, \code{\link{procSym}}
@@ -27,10 +30,16 @@
 #' ##now the first 3 scores
 #' lm2 <- restoreShapes(proc$PCscores[1,1:3],proc$PCs[,1:3],proc$mshape)
 #' points(lm2,col=2)
+#'
+#' ## Now restore some sizeshape data
+#' procSize <- procSym(gorf.dat,sizeshape=TRUE)
+#' est1 <- restoreShapes(range(procSize$PCscores[,1]),procSize$PCs[,1],procSize$mshape,
+#'                       sizeshape=TRUE,origsize=TRUE,meanlogCS=procSize$meanlogCS)
 #' }
+#' 
 #' @seealso \code{\link{getPCscores}}
 #' @export
-restoreShapes <- function(scores,PC,mshape)
+restoreShapes <- function(scores,PC,mshape,sizeshape=FALSE,origsize=FALSE,meanlogCS)
   {
     dims <- dim(mshape)
     PC <- as.matrix(PC)
@@ -42,13 +51,24 @@ restoreShapes <- function(scores,PC,mshape)
         if (length(scores) != ncol(PC))
             stop("scores must be of the same length as ncol(PC)")
         predPC <- PC%*%scores
-        modell <- mshape+matrix(predPC,dims[1],dims[2])
+        if (!sizeshape)
+            modell <- mshape+matrix(predPC,dims[1],dims[2])
+        else {
+            modell <- mshape+matrix(predPC[-1],dims[1],dims[2])
+            if (origsize) {
+                
+                if (missing(meanlogCS))
+                    stop("please provide mean log centroid size")
+            
+                modell <- modell*(exp(predPC[1]+meanlogCS))
+            }
+        }
         return(modell)
     } else {
           n <- nrow(scores)
           outarr <- array(0,dim=c(dims,n))
           for (i in 1:n) {
-              outarr[,,i] <- restoreShapes(scores[i,],PC,mshape)
+              outarr[,,i] <- restoreShapes(scores[i,],PC,mshape,sizeshape=sizeshape,origsize=origsize,meanlogCS=meanlogCS)
           }
           if (!is.null(rownames(scores)))
               dimnames(outarr)[[3]] <- rownames(scores)

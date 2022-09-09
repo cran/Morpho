@@ -343,7 +343,7 @@ render.meshDist <- function(x,from=NULL,to=NULL,steps=NULL,ceiling=NULL,uprange=
             colorall[good] <- tolcol
         }
         colfun <- function(x){x <- colorall[x];return(x)}
-        colMesh$material$color <- matrix(colfun(colMesh$it),dim(colMesh$it))
+        colMesh$material$color <- colorall
         colMesh$material$color[is.na(colMesh$material$color)] <- NAcol
                                         #colMesh$material$color <- matrix(colfun(colMesh$it),dim(colMesh$it))
         colramp <- list(1,colseq, matrix(data=colseq, ncol=length(colseq),nrow=1),col=ramp,useRaster=T,ylab=titleplot,xlab="",xaxt="n")
@@ -364,13 +364,14 @@ render.meshDist <- function(x,from=NULL,to=NULL,steps=NULL,ceiling=NULL,uprange=
         dismesh$vb <- cbind(colMesh$vb,rbind(clost,1))
         dismesh$it <- rbind(1:vl,1:vl,(1:vl)+vl)
         dismesh$material$color <- colorall
+        dismesh$normals <- cbind(dismesh$normals, dismesh$normals)
         wire3d(dismesh,lit=FALSE)
     }
     diffo <- ((colramp[[2]][2]-colramp[[2]][1])/2)
     image(colramp[[1]],colramp[[2]][-1]-diffo,t(colramp[[3]][1,-1])-diffo,col=colramp[[4]],useRaster=TRUE,ylab=titleplot,xlab="",xaxt="n")
     if (!is.null(tol)) {
         if (sum(abs(tol)) != 0)
-            image(colramp[[1]],c(tol[1],tol[2]),matrix(c(tol[1],tol[2]),1,1),col=tolcol,useRaster=TRUE,add=TRUE)
+            image(colramp[[1]],c(tol[1],tol[2]),t(tol),col=tolcol,useRaster=TRUE,add=TRUE)
     }
     params <- list(steps=steps,from=from,to=to,uprange=uprange,ceiling=ceiling,sign=sign,tol=tol,rampcolors=rampcolors,NAcol=NAcol,tolcol=tolcol)
     out <- list(colMesh=colMesh,dists=distsOrig,cols=colorall,colramp=colramp,params=params,distqual=distqual,clost=clost)

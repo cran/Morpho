@@ -20,6 +20,7 @@ deformGrid2d(
   wireframe = NULL,
   margin = 0.2,
   gridcol = "grey",
+  gridlty = 1,
   cex1 = 1,
   cex2 = 1,
   ...
@@ -58,11 +59,16 @@ plotted. Options are combinations of 1,2 and 3.}
 
 \item{gridcol}{color of the grid}
 
+\item{gridlty}{linetype for grid}
+
 \item{cex1}{control size of points belonging to \code{matrix}}
 
 \item{cex2}{control size of points belonging to \code{tarmatrix}}
 
 \item{...}{additional parameters passed to plot}
+}
+\value{
+if \code{ngrid > 1} the coordinates of the displaced grid knots are returned.
 }
 \description{
 visualise differences between two superimposed sets of 2D landmarks by

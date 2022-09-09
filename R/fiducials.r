@@ -33,9 +33,14 @@ read.fcsv <- function(x,na=NULL,lps2ras=FALSE) {
     getnames <- function(x) {
         tmp <- strsplit(x[labelpos], split = "=")
         tmp <- unlist(tmp, recursive = F)
+        if (!length(tmp))
+            tmp <- "UnnamedXYZ123"
         return(tmp)
     }
     mynames <- unlist(lapply(data,getnames))
+    NN <- which(mynames == "UnnamedXYZ123")
+    if (length(NN))
+        mynames[NN] <- paste0("Unnamed","-",NN)
     data <- lapply(data, subfun)
     
     tmp <- as.numeric(unlist(data))
@@ -47,7 +52,9 @@ read.fcsv <- function(x,na=NULL,lps2ras=FALSE) {
         if (length(nas) > 0) 
             tmp[nas] <- NA 
     }
-    rownames(tmp) <- mynames
+    
+    if (nrow(tmp) == length(mynames))
+        rownames(tmp) <- mynames
     return(tmp)
 }
 

@@ -13,7 +13,8 @@ pls2B(
   useCor = FALSE,
   cv = FALSE,
   cvlv = NULL,
-  mc.cores = parallel::detectCores()
+  mc.cores = parallel::detectCores(),
+  ...
 )
 }
 \arguments{
@@ -37,7 +38,9 @@ originate from landmarks that are superimposed together.}
 
 \item{cvlv}{integer: number of latent variables to test}
 
-\item{mc.cores}{integer: determines how many cores to use for the
+\item{mc.cores}{integer: determines how many cores to use for the}
+
+\item{...}{arguments passed to \code{\link{ProcGPA}}
 computation. The default is autodetect. But in case, it doesn't work as
 expected cores can be set manually. Parallel processing is disabled on
 Windows due to occasional errors.}
@@ -53,6 +56,8 @@ covariation, correlation coeffictient between PLS-scores and p-values for singul
 \item{ylm}{linear model: \code{lm(Yscores ~ Xscores - 1)}}
 \item{predicted.x}{array containing matrices of cross-validated predictions for \code{x}(landmarks arrays will be vectorized using \code{\link{vecx}})}
 \item{predicted.y}{array containing matrices of cross-validated predictions for \code{y} (landmarks arrays will be vectorized using \code{\link{vecx}})}
+\item{rv}{RV-coefficient}
+\item{p.value.RV}{p-value for RV-coefficient determined by permutation testing}
 }
 \description{
 Performs a Two-Block PLS on two sets of data and assesses the significance
