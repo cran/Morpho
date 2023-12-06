@@ -30,9 +30,9 @@ RcppExport SEXP edgePlane(SEXP vb_, SEXP diff_, SEXP edges_) {
     out = out.rows(myinds);
     return wrap(out);
   } catch (std::exception& e) {
-    ::Rf_error( e.what());
+    forward_exception_to_r( e );
   } catch (...) {
     ::Rf_error("unknown exception");
-  }
+  } return R_NilValue; 
 }
   

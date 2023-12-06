@@ -20,10 +20,10 @@ double angcalcArma(vec a, vec b) {
     double angle = acos((dot(diffvec,diffvec)-2)/-2);
     return angle;
   } catch (std::exception& e) {
-    ::Rf_error( e.what());
+    forward_exception_to_r( e );
   } catch (...) {
     ::Rf_error("unknown exception");
-  }
+  } return 1.0; // -Wall
 }
 		
 double angcalcRcpp(NumericVector a_, NumericVector b_) {
@@ -40,10 +40,10 @@ double angcalcRcpp(NumericVector a_, NumericVector b_) {
     double angle = acos((dot(diffvec,diffvec)-2)/-2);
     return angle;
   } catch (std::exception& e) {
-    ::Rf_error( e.what());
+    forward_exception_to_r( e );
   } catch (...) {
     ::Rf_error("unknown exception");
-  }
+  } return 1.0; 
 }
 void crosspArma(colvec x, colvec y, colvec& z) {
   z(0) = x(1)*y(2)-x(2)*y(1);

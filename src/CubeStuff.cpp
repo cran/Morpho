@@ -15,10 +15,10 @@ SEXP addoCpp(SEXP array_) {
     mat out = Morpho::IOCube<double>::addCube(myCube);
     return wrap(out);
   } catch (std::exception& e) {
-    ::Rf_error( e.what());
+    forward_exception_to_r( e );
   } catch (...) {
     ::Rf_error("unknown exception");
-  }
+  } return R_NilValue; 
 
 }
 SEXP arrMean3Cpp(SEXP array_) {
@@ -31,10 +31,10 @@ SEXP arrMean3Cpp(SEXP array_) {
     out = out/denom;
     return wrap(out);
   } catch (std::exception& e) {
-    ::Rf_error( e.what());
+    forward_exception_to_r( e );
   } catch (...) {
     ::Rf_error("unknown exception");
-  }
+  } return R_NilValue; 
 
 }
 
@@ -100,8 +100,8 @@ SEXP scaleprocCpp(SEXP array_) {
     }
     return wrap(h);
   } catch (std::exception& e) {
-    ::Rf_error( e.what());
+    forward_exception_to_r( e );
   } catch (...) {
     ::Rf_error("unknown exception");
-  }
+  } return R_NilValue; 
 }
