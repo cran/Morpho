@@ -1,5 +1,5 @@
-f432b1274f8b9a433751569577cfceae *DESCRIPTION
-09c7a865a6df6ebfb4e3f684ebd7e9c0 *NAMESPACE
+5685352c90cfbe0fd40b9b82e75b58f5 *DESCRIPTION
+116970fd43abd677b54645c12ffed4c8 *NAMESPACE
 edecb965f7f1d69b98120934cb23247e *R/Atlas.r
 024e1faf14927cbbcf51a71234b34087 *R/CAC.r
 5abe318d58d4bc465e797a91706efb19 *R/CVA.crova.r
@@ -7,7 +7,8 @@ edecb965f7f1d69b98120934cb23247e *R/Atlas.r
 45acff4695ca701be796368592284a2c *R/CVAdists.r
 d8605ff73e4d5a1eb6a2a8b9276019f2 *R/ComputeTransform.r
 85b0be8317268dc6fd4d59e9f66ab011 *R/CreateL.r
-e3ec61dc82aa97653e7395bb4f8016c8 *R/Morpho-package.R
+600ea06f0c81dd9723e9adecd5427368 *R/ILDS.r
+8cb02e12786ca1230ec571998b049649 *R/Morpho-package.R
 1a9a0e8780346ded9ad8b09010775064 *R/NNshapeReg.r
 e3d704db3f67e1c2529ee68fbe5f3984 *R/PCdist.r
 423783cd203f5e49aca1f51a49f7fdac *R/PCmeaning.r
@@ -33,7 +34,7 @@ a333179f5fb79887ad3bbc99cf1f0890 *R/checkNA.r
 e4708776b2631852b55b140ed03379a3 *R/classify.r
 822869c6a29cad9deb3f436f70eec35d *R/closemeshKD.r
 2d7cc4c3b639b71b3654ea2a095a6810 *R/colors.r
-5802bd66521e9de4b188d3211733ba34 *R/computeArea.r
+e12233df44bbbb6424b45de8d7f36e00 *R/computeArea.r
 f15811b068c9a2751b9294f382c17a2b *R/conv2backf.r
 6255e586e22f17bc7bb27de8aa60fa3c *R/covDist.r
 3477abac6304d950e063c73c6274df2c *R/createMissingList.r
@@ -60,8 +61,9 @@ a3e2018faef99295546e9ecdd34b37ec *R/fx.r
 f29311f26c52911445ff5a3473384792 *R/groupPCA.r
 5018aedd72c8878f3a22929017187c28 *R/groupPCAcrova.r
 d8b961a8c77a184b7c30066d284b974e *R/histGroup.r
-bd82470e9b621ee0ae080491e8762997 *R/icpmat.r
+7e5169f74e7b4571526007e98b0eee1a *R/icpmat.r
 2171858a978042fda4955b9ad46b678b *R/ignoreNA.r
+db78db07120e6053b81e5e1eef3e8016 *R/inscribeEllipse.r
 ea1980910b9e1ddad0156cb139980252 *R/kendalldist.r
 13e02fb9f81aba4e8fa39099a7792528 *R/line2plane.r
 4c1e8a2f4dcc7d107346af4efa0d0aa1 *R/lineplot.r
@@ -71,8 +73,8 @@ b6ec64bec0a7cf800a2e6bbb499c3b52 *R/mcNNindex.r
 89bf09be8c855f8c486b0126108fcf6b *R/mesh2grey.r
 3b0f731d03638c2393e7718ebc02087c *R/mesh2obj.r
 e58b0c1ef37dbfaf2d2f668441531545 *R/mesh2ply.r
-d93fc3fe778ba040d68264a2157963d5 *R/meshDist.r
-f23ff3921c8279432758ca4f154ff8b1 *R/meshDistMatrix.r
+576eb7a7df228bf6667d66473ffeb7d9 *R/meshDist.r
+8a28da32ed4eabc89e047bd27fb694a9 *R/meshDistMatrix.r
 8041900e814739a837c82fb7619f61f2 *R/meshDistZExport.r
 24ed599397ca4ec115af6c39d5d0a77f *R/meshPlaneIntersect.r
 6fbe599fa7c1f606da379506f8a5f33b *R/meshcube.r
@@ -92,7 +94,7 @@ ce20db7de95f7436bd4c0c360d6975f3 *R/permudist.r
 bbfd350a7a7eb9643c33c8d25a1d6c70 *R/ply2mesh.r
 b5254ca0afcdd2b0947c0c590f561120 *R/points2plane.r
 f06dc75ae8a3395ca6848ee01936ea18 *R/pointsOnOutline.r
-86faf9907c7b2a98b9c6e96983e7cd8c *R/prcompfast.r
+dfad731e30047c4ca21de3f55afe7028 *R/prcompfast.r
 a44b0bba8e2b6834b264157e988f71e1 *R/predictShape.lm.r
 b309c461718415f4b5521fdd96bb4fbe *R/proc.weight.r
 25f6c464c1c582cbdd39891c1d470627 *R/procAOVsym.r
@@ -133,8 +135,8 @@ ad934b3b0fcc4c624785149f7c62273a *R/updateIndices.r
 6f846c3ccbd544d0af46aadc52f8f038 *R/updateNormals.r
 764cbef77365e6986c97a836a704524d *R/vecx.r
 2eb5b646ccd8a67e0ea97ee76910ea19 *R/vertex.r
-84c28c9d97de153ce28893f3a056c0ac *R/virtualMeshScan.r
-a68b760b927e1c1c0ef628750929b304 *R/warpmovie.matrix.r
+dec10daabacc44afdacfa0d956074f01 *R/virtualMeshScan.r
+b92944f39429e20fd35e992dbedbec73 *R/warpmovie.matrix.r
 4ca18e008fb910c63007a475259992bb *R/warpmovie.r
 7ad7596f53e532042fc6025ef639ccea *R/write.obj.r
 7d26a965e36f1a475a6e16ab9a27cb75 *R/write.pts.r
@@ -143,16 +145,18 @@ a68b760b927e1c1c0ef628750929b304 *R/warpmovie.matrix.r
 f1679a97424796e7cc5bfb4710dbadba *data/nose.rda
 db17f2c29701d7264f7365e9cd1b702d *inst/CITATION
 1ac749899ab60db2ae275710cf045ff0 *inst/COPYRIGHTS
-473f15ab8aa64d70e66361b07fbbbb70 *inst/NEWS.Rd
+2bac04f69cac2e036d82774e884db944 *inst/NEWS.Rd
 e838659f0f9d4a43205103177f9364f9 *inst/extdata/SCP1.ply
 9ccd0e6fd1af757afdf6b68b2c450557 *inst/extdata/SCP1_Endo.fcsv
 21f940dacf505e6ca5c06374fb983582 *inst/extdata/landmarks.pts
 277b5aad5c618c6e68bf6042abe9fb42 *man/CAC.Rd
 c4ed83ef5cc8e9648d8363d1e1fac2c8 *man/CVA.Rd
 817bf3b41f6f67878141b184e0dcd9f6 *man/CreateL.Rd
+13292641a25082c8fa077d569fdba50d *man/ILDS.Rd
+f0fb9e8de34195a249f3b08fd42bd74a *man/ILDSR2.Rd
 4f438bf7bd07ea97a292ba97adc61613 *man/LPS2RAS.Rd
 dbf0e872ee8115c94ccd74de8df2121a *man/Morpho-deprecated.Rd
-a50d52977a18002d5fccecea12575107 *man/Morpho-package.Rd
+ae2f1a673408941b95797d9a5c6c3361 *man/Morpho-package.Rd
 124e4affc533e4f6be9f816162ac654b *man/NNshapeReg.Rd
 fa033e962173ea4cf0181f2f352697a2 *man/PCdist.Rd
 523c2627302db4cbd6a22489d7cc3016 *man/ProcGPA.Rd
@@ -197,7 +201,7 @@ d5e4d3e762bbd326cd4dde19769d6d98 *man/fixLMmirror.Rd
 dc421e8c9dbe492611b401f8cd21dc0e *man/fixLMtps.Rd
 7f626ec79045a2ce6e0996ec10dde355 *man/getFaces.Rd
 75dea83c22a72c9b3846fcc2c8d656b5 *man/getMeaningfulPCs.Rd
-61355c7b7188a8498234718504ac4291 *man/getOuterViewpoints.Rd
+13e769e381f76fcd75429afeab6a45e3 *man/getOuterViewpoints.Rd
 345a377d6d9645d3421215084f8dbcae *man/getPCscores.Rd
 a147834388c5413a9e8c0a0f3a465dcf *man/getPCtol.Rd
 caa4d308bc1cd474a271714a328ce470 *man/getPLSCommonShape.Rd
@@ -210,7 +214,9 @@ a0247556ff97ebe6a8ba674d7e8c02ea *man/getTrafoRotaxis.Rd
 2b9a742839499ebe167e61fb1207b8e1 *man/getVisibleVertices.Rd
 ff0afc19b02d0ed8f6e4c7732f5d30b3 *man/groupPCA.Rd
 25990d26ab6ca219b01586ca40bcf509 *man/histGroup.Rd
-a484b5f7eb152141db653724d641b655 *man/icpmat.Rd
+29f196008c4d7eccc22ba1b1360fee1f *man/icpmat.Rd
+50ce00f9053589022ec08363a72726e2 *man/inscribeEllipse.Rd
+a100fd1c81c5d9ac368650f0889c8e27 *man/inscribeEllipseRot.Rd
 2556a2d4e5c50ba9869736f8ce4aa136 *man/invertFaces.Rd
 00f25182cd3802ba4e8434a4d2aa1e72 *man/kendalldist.Rd
 a622165191d95b93f7ad1ae3ef7a7c8c *man/line2plane.Rd
@@ -220,7 +226,7 @@ f82fc6386f5ea4826ce6e15e5c4cc4e2 *man/mcNNindex.Rd
 3903a550ae8e537e63304c67fa108f10 *man/mergeMeshes.Rd
 4c1e5df65bd610ab95b7a81f8636ce92 *man/mesh2grey.Rd
 56b3bb3209f54edf3317be9585a85544 *man/mesh2ply.Rd
-1fdb295b121985c3c79ae88ecc307a4b *man/meshDist.Rd
+573633df8e9099d859ac0d465489681b *man/meshDist.Rd
 0b0638e56dc7e664dafd5e4cf46fb7c8 *man/meshPlaneIntersect.Rd
 c2a5e693855a76b71f53a14943771f70 *man/meshcube.Rd
 f9d91f9c8b08bc785b2d2777dbe68dc3 *man/meshres.Rd
@@ -233,6 +239,7 @@ d6e7a04553a73e73b44dffa693787996 *man/name2factor.Rd
 8967e97eb095d23ee1e8d2541951b3c2 *man/permudist.Rd
 32746d8e1c8f35471a68e3322089df7d *man/permuvec.Rd
 321eeb83e5e08524040efc004e193a59 *man/placePatch.Rd
+dccac3b965fe273117985f4e3cdd90c2 *man/plot.ILDSR2.Rd
 5e2d3502327fdad6b7f9289b7108b25b *man/plot.slider3d.Rd
 0c8097851ee11cb9d8ef084a4faafbeb *man/plotAtlas.Rd
 1240f5ba299335822468e1e34b9f3735 *man/plotNormals.Rd
@@ -267,7 +274,7 @@ f4f2d1b4d5a948bd2b041c4da54c1e6c *man/readLandmarks.csv.Rd
 e7a66e103fc4f95d1bfdf1785600ae38 *man/regdist.Rd
 96b7e10e8e8013151a11cedc85a75acb *man/relWarps.Rd
 6b57a96f16a99765fe1ca16817e43a14 *man/relaxLM.Rd
-32b927134d73d3347749c262ef7f8e71 *man/render.Rd
+0dc6c99e75a39a5ede568ee96122b873 *man/render.Rd
 f0c1020f82992e71b57ccf172b06c20c *man/resampleCurve.Rd
 2485cda5fedd46d95c05a7bfac9333ad *man/restoreFromPCA.Rd
 cb713f42c72f55bd42a2fcd2dfe6ad34 *man/restoreShapes.Rd
@@ -292,7 +299,8 @@ cdc22c2a3ed727bf7e7b893768bb8d13 *man/updateIndices.Rd
 d40ad1f522d9ce19c49b232290c2fdab *man/vecx.Rd
 877630f44653305812939297c63126d9 *man/vertex.Rd
 2470b02030d6c67768e023b9e4529c9f *man/virtualMeshScan.Rd
-a22178d38f8f7a770a8bb2d32fa3bad7 *man/warpmovie3d.Rd
+34410db93cd1336183bca4abc99a92cc *man/visualize.Rd
+ce680a29106011b6c2893f018990eda9 *man/warpmovie3d.Rd
 00a0980086c8a26d2eb4c8e014a14f58 *man/write.fcsv.Rd
 4a99d377f2a2eb1217aac600eb7a8029 *man/write.pts.Rd
 a0b9dd4741fa4e9078ee93beeaf047c4 *man/write.slicerjson.Rd
@@ -300,7 +308,7 @@ a0b9dd4741fa4e9078ee93beeaf047c4 *man/write.slicerjson.Rd
 a8545011a0e34538330c2b2e33fa3484 *src/CVAdists.h
 c6995cd13637557b4f507af1f17977cf *src/CubeStuff.cpp
 d369aa2ae492fb570025aa034724b895 *src/CubeStuff.h
-6b3a53f4f2a13ecb7aba086daa6be2c0 *src/Makevars
+34ec004771b26dbeb83a2c5ded505e9e *src/Makevars
 df1ada14d523008efec093646d5e730e *src/addCube.h
 579d0a6ae1a7607f77a40cb1c4ce8d13 *src/ang_calc.cpp
 141b52aadd86626256c250e0a524d2e8 *src/armaGinvCpp.cpp
@@ -316,7 +324,9 @@ d3dd9aff7bffff3f2aafc73a0e5de3e3 *src/doozers.h
 5abc004b057f980a269dc8085982cad0 *src/edgePlane.cpp
 d2f7bf07f3acf99f5fffb6b085c693bc *src/face_zero.cpp
 32a1ab98b3eb43ffe846a4ed43132cdb *src/fastSubsetMeans.cpp
-f1d164c9c9607ea3552f20503d56d790 *src/init.c
+8137a665e0c1a120f6ccaf55793376c0 *src/init.c
+56fbc6a5284822c30070690820d6a965 *src/inscribeEllipse.cpp
+da1c27a65d8c1607ed94eaac192b5419 *src/inscribeEllipse.h
 811bd8896c08debd89e8cd0f5363a53b *src/meshres.cpp
 ca3b5be1eef3c9e2b096ca45e9549140 *src/permudistArma.cpp
 96c393a23024928b17d2582122485da1 *src/permudistArma.h
